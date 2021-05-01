@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20D75" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Box" representedClassName="Box" syncable="YES" codeGenerationType="class">
+        <attribute name="code" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="comment" optional="YES" attributeType="String"/>
+        <attribute name="imageUUID" optional="YES" attributeType="String" allowsExternalBinaryDataStorage="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="box" inverseEntity="Item"/>
+        <relationship name="location" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="boxes" inverseEntity="Location"/>
+    </entity>
+    <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
+        <attribute name="barcode" optional="YES" attributeType="String"/>
+        <attribute name="comment" optional="YES" attributeType="String"/>
+        <attribute name="imageUUIDs" optional="YES" attributeType="String"/>
+        <attribute name="keywords" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <relationship name="box" maxCount="1" deletionRule="Nullify" destinationEntity="Box" inverseName="items" inverseEntity="Box"/>
+    </entity>
+    <entity name="Location" representedClassName="Location" syncable="YES" codeGenerationType="class">
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <relationship name="boxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Box" inverseName="location" inverseEntity="Box"/>
+    </entity>
+    <elements>
+        <element name="Box" positionX="-127.5833740234375" positionY="-258.1993408203125" width="128" height="119"/>
+        <element name="Item" positionX="-81" positionY="-90" width="128" height="119"/>
+        <element name="Location" positionX="-63" positionY="-18" width="128" height="73"/>
+    </elements>
+</model>
