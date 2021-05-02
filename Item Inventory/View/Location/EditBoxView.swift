@@ -12,9 +12,11 @@ struct EditBoxView: View {
     @Environment(\.storage)
     private var storage
 
+    @ObservedObject
+    private var cache: ImageCache
+
     @Environment(\.presentationMode)
     private var presentationMode
-
 
     private var box: Box?
 
@@ -31,8 +33,6 @@ struct EditBoxView: View {
 
     @State private var image: UIImage?
 
-    @State private var imageUUID: String?
-
     // State
 
     @State private var isScanning = false
@@ -41,30 +41,29 @@ struct EditBoxView: View {
 
     @State private var errorMessage: String?
 
-    /// Don't allow saving while image is being processed
-    @State private var isProcessingImage = false
-
+    @State private var isCancelling = false
     @State private var isSaving = false
 
     /// Create a new box
-    init(_ location: Location) {
+    init(_ storage: Storage, location: Location) {
         _location = State(initialValue: location)
         _code = State(initialValue: storage.lastBoxID + 1)
+        _cache = ObservedObject(initialValue: storage.imageCache(initial: []))
     }
 
     /// Edit existing box
-    init(_ box: Box) {
+    init(_ storage: Storage, box: Box) {
         self.box = box
         _location = State(initialValue: box.location!)
         _name = State(initialValue: box.name ?? "")
         _comment = State(initialValue: box.comment ?? "")
         _code = State(initialValue: Int(box.code))
+        _cache = ObservedObject(initialValue: storage.imageCache(initial: [box.imageUUID].compactMap { $0 }))
         if
             let imageUUID = box.imageUUID,
-            let imageData = try? Data(contentsOf: storage.imageURL(for: imageUUID)),
+            let imageData = try? Data(contentsOf: storage.imageStore.imageURL(for: imageUUID)),
             let image = UIImage(data: imageData) {
 
-            self._imageUUID = State(initialValue: imageUUID)
             self._image = State(initialValue: image)
         }
     }
@@ -124,14 +123,7 @@ struct EditBoxView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        // Delete new image
-                        if
-                            let newImageUUID = imageUUID,
-                            let originalUUID = box?.imageUUID,
-                            newImageUUID != originalUUID {
-                            storage.deleteImage(with: newImageUUID)
-                        }
-                        presentationMode.wrappedValue.dismiss()
+                        cancel()
                     }
                     .disabled(isSaving)
                 }
@@ -146,7 +138,7 @@ struct EditBoxView: View {
                                 save()
                             }
                         }
-                        .disabled(name.isEmpty || isProcessingImage)
+                        .disabled(name.isEmpty || cache.inProgress > 0)
                     }
                 }
             }
@@ -161,13 +153,28 @@ struct EditBoxView: View {
                       message: Text(message),
                       dismissButton: .default(Text("OK")))
             }
-            // Process image to PNG data
+            // Process an image change
             .onChange(of: image) { newImage in
-                if newImage != nil {
-                    processImage()
+
+                // There is a new image
+                if let newImage = newImage {
+                    if let oldImage = cache.images.first {
+                        cache.replace(oldImage, with: newImage)
+                    } else {
+                        cache.add(newImage)
+                    }
+
+                // The image was deleted
                 } else {
-                    imageUUID = nil
+                    if let oldImage = cache.images.first {
+                        cache.delete(oldImage)
+                    }
                 }
+            }
+        }
+        .onDisappear {
+            if !isCancelling && !isSaving {
+                cancel()
             }
         }
     }
@@ -219,51 +226,35 @@ struct EditBoxView: View {
 
     }
 
-    /// Process image (change to JPG) on background thread
-    private func processImage() {
-        guard let image = image else { return }
-
-        isProcessingImage = true
-        DispatchQueue.global(qos: .userInitiated).async {
-
-            // Conver and save new image
-            let data = image.jpegData(compressionQuality: 0.7)!
-            let uuid = storage.saveImage(data)
-
-            // Delete old image (if not from existing Box)
-            if let originalUUID = box?.imageUUID,
-               let currentUUID = imageUUID,
-               originalUUID != currentUUID {
-                storage.deleteImage(with: currentUUID)
-            }
-
-            DispatchQueue.main.async {
-                imageUUID = uuid
-                isProcessingImage = false
-            }
-        }
+    /// Cancel adding or editing a box
+    private func cancel() {
+        isCancelling = true
+        cache.cancel()
+        presentationMode.wrappedValue.dismiss()
     }
 
     /// Add a new box
     private func add() {
         isSaving = true
+        cache.save()
         storage.addBox(name: name,
                        location: location,
                        comment: comment,
                        code: code,
-                       imageUUID: imageUUID)
+                       imageUUID: cache.images.first)
         presentationMode.wrappedValue.dismiss()
     }
 
     /// Save edited box
     private func save() {
         isSaving = true
+        cache.save()
         storage.editBox(box: box!,
                         name: name,
                         location: location,
                         comment: comment,
                         code: code,
-                        imageUUID: imageUUID)
+                        imageUUID: cache.images.first)
         presentationMode.wrappedValue.dismiss()
     }
 
@@ -273,7 +264,7 @@ struct EditBoxView: View {
 struct EditBoxView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            EditBoxView(Location())
+            EditBoxView(Storage.shared, location: Location())
         }
     }
 }

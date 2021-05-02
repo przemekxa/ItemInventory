@@ -73,10 +73,10 @@ struct LocationView: View {
             }
         }
         .sheet(isPresented: $addBoxSheet) {
-            EditBoxView(location)
+            EditBoxView(storage, location: location)
         }
         .sheet(item: $editBoxSheet) { box in
-            EditBoxView(box)
+            EditBoxView(storage, box: box)
         }
     }
 
@@ -85,7 +85,7 @@ struct LocationView: View {
         HStack(spacing: 12.0) {
 
             if let imageUUID = box.imageUUID {
-                KFImage(storage.imageURL(for: imageUUID))
+                KFImage(storage.imageStore.imageURL(for: imageUUID))
                     .cancelOnDisappear(true)
                     .loadImmediately()
                     .resizable()

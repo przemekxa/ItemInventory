@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import Combine
 import OSLog
 
 class Storage {
@@ -19,7 +20,8 @@ class Storage {
 
     static let shared = Storage()
 
-    private let imagesDirectory: URL
+    let imageStore = ImageStore()
+    private var imageOperations = Set<AnyCancellable>()
 
     private init() {
 
@@ -34,22 +36,6 @@ class Storage {
         context = container.viewContext
         context.automaticallyMergesChangesFromParent = true
         backgroundContext = container.newBackgroundContext()
-
-        imagesDirectory = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask).first!
-            .appendingPathComponent("images", isDirectory: true)
-
-        if !FileManager.default.fileExists(atPath: imagesDirectory.path) {
-            do {
-                try FileManager.default.createDirectory(at: imagesDirectory, withIntermediateDirectories: true)
-            } catch {
-                Logger.storage.error("Cannot create directory")
-            }
-        }
-
-        if let contents = try? FileManager.default.contentsOfDirectory(atPath: imagesDirectory.path) {
-            print("Contents: ", contents)
-        }
     }
 
     /// Save any changes to the database
@@ -167,13 +153,6 @@ class Storage {
                  comment: String,
                  code: Int,
                  imageUUID: String?) {
-
-
-        // Delete old image
-        if let oldImageUUID = box.imageUUID, (imageUUID == nil || (imageUUID != nil && imageUUID! != oldImageUUID)) {
-            deleteImage(with: oldImageUUID)
-        }
-
         box.name = name
         box.location = location
         box.comment = comment
@@ -185,47 +164,20 @@ class Storage {
 
     /// Delete a box
     func delete(_ box: Box) {
-        if let imageUUID = box.imageUUID {
-            deleteImage(with: imageUUID)
+        if let identifier = box.imageUUID {
+            imageStore.delete(identifier)
+                .sink { }
+                .store(in: &imageOperations)
         }
         delete(box.objectID)
     }
 
     // MARK: - Images
 
-    /// Create image path from URL
-    func imageURL(for uuid: String) -> URL {
-        imagesDirectory.appendingPathComponent(uuid + ".jpg")
+    /// Create a new image cache
+    /// - Parameter images: Images to be initailly in cache
+    func imageCache(initial images: [ImageStore.Identifier]) -> ImageCache {
+        ImageCache(imageStore, initial: images)
     }
-
-    /// Save an image
-    func saveImage(_ data: Data) -> String {
-        var url: URL
-        var uuid: String
-
-        repeat {
-            uuid = UUID().uuidString
-            url = self.imageURL(for: uuid)
-        } while FileManager.default.fileExists(atPath: url.path)
-
-        do {
-            try data.write(to: url)
-        } catch {
-            Logger.storage.error("Cannot save file")
-        }
-
-        return uuid
-    }
-
-    /// Delete an image from URL
-    func deleteImage(with uuid: String) {
-        do {
-            try FileManager.default.removeItem(at: imageURL(for: uuid))
-        } catch {
-            Logger.storage.error("Cannot delete file")
-        }
-    }
-
-
 
 }
