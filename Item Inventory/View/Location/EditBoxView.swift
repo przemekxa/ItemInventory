@@ -80,11 +80,12 @@ struct EditBoxView: View {
                 TextField("Comment", text: $comment)
 
                 HStack {
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 4.0) {
                         Text("QR code")
                             .font(.caption)
                             .foregroundColor(Color(UIColor.secondaryLabel))
                         Text(formattedID)
+                            .font(.system(.body, design: .monospaced))
                     }
                     Spacer()
                     Button {
@@ -101,8 +102,7 @@ struct EditBoxView: View {
                         Image(uiImage: image)
                             .resizable()
                             .scaledToFill()
-                            .frame(maxHeight: 200.0)
-                            .padding(.horizontal, -24.0)
+                            .listRowInsets(EdgeInsets())
                         Button {
                             withAnimation {
                                 self.image = nil

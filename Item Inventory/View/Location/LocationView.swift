@@ -42,7 +42,7 @@ struct LocationView: View {
         EmptyableList(items: boxes, emptyText: "No boxes") {
             ForEach(boxes, id: \.self) { box in
                 NavigationLink(
-                    destination: Text("Destination"),
+                    destination: BoxView(box),
                     label: { cell(for: box) })
                     .contextMenu {
                         Button {

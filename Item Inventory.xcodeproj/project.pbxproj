@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		011DBA72263F4B8700E5713A /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DBA71263F4B8700E5713A /* ImageCache.swift */; };
 		011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DBA73263F4E6500E5713A /* ImageStore.swift */; };
+		0121CAEC264096D10071E633 /* BoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAEB264096D10071E633 /* BoxView.swift */; };
+		0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAED2640AE200071E633 /* CoreData+Extension.swift */; };
+		0121CAF02640AF490071E633 /* BoxHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAEF2640AF490071E633 /* BoxHeaderView.swift */; };
 		0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121F0AC263DB04E00CEA168 /* Identifiable.swift */; };
 		01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC0A263D689000940A47 /* AppDelegate.swift */; };
 		01B2EC0D263D689000940A47 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC0C263D689000940A47 /* SceneDelegate.swift */; };
@@ -34,6 +37,9 @@
 /* Begin PBXFileReference section */
 		011DBA71263F4B8700E5713A /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		011DBA73263F4E6500E5713A /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
+		0121CAEB264096D10071E633 /* BoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxView.swift; sourceTree = "<group>"; };
+		0121CAED2640AE200071E633 /* CoreData+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extension.swift"; sourceTree = "<group>"; };
+		0121CAEF2640AF490071E633 /* BoxHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxHeaderView.swift; sourceTree = "<group>"; };
 		0121F0AC263DB04E00CEA168 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		01B2EC07263D689000940A47 /* Item Inventory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Item Inventory.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B2EC0A263D689000940A47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +75,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0121CAEA264096C10071E633 /* Box */ = {
+			isa = PBXGroup;
+			children = (
+				0121CAEB264096D10071E633 /* BoxView.swift */,
+				0121CAEF2640AF490071E633 /* BoxHeaderView.swift */,
+			);
+			path = Box;
+			sourceTree = "<group>";
+		};
 		01B2EBFE263D689000940A47 = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				01B2EC10263D689000940A47 /* Item_Inventory.xcdatamodeld */,
+				0121CAED2640AE200071E633 /* CoreData+Extension.swift */,
 				01B2EC23263D6CE100940A47 /* Storage.swift */,
 				011DBA73263F4E6500E5713A /* ImageStore.swift */,
 				011DBA71263F4B8700E5713A /* ImageCache.swift */,
@@ -147,6 +163,7 @@
 				01B2EC2B263D73C700940A47 /* Locations */,
 				01B2EC32263D89D200940A47 /* Location */,
 				01B2EC35263D919800940A47 /* EmptyableList.swift */,
+				0121CAEA264096C10071E633 /* Box */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -262,14 +279,17 @@
 				01B2EC29263D706E00940A47 /* Navigation.swift in Sources */,
 				01B2EC0D263D689000940A47 /* SceneDelegate.swift in Sources */,
 				011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */,
+				0121CAF02640AF490071E633 /* BoxHeaderView.swift in Sources */,
 				01B2EC0F263D689000940A47 /* ContentView.swift in Sources */,
 				01B2EC38263D94AB00940A47 /* EditBoxView.swift in Sources */,
 				01B2EC34263D89E600940A47 /* LocationView.swift in Sources */,
 				01B2EC2D263D73D800940A47 /* LocationsView.swift in Sources */,
 				01B2EC12263D689000940A47 /* Item_Inventory.xcdatamodeld in Sources */,
 				01B2EC36263D919800940A47 /* EmptyableList.swift in Sources */,
+				0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */,
 				01B2EC24263D6CE100940A47 /* Storage.swift in Sources */,
 				01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */,
+				0121CAEC264096D10071E633 /* BoxView.swift in Sources */,
 				0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */,
 				01B2EC31263D7B3900940A47 /* Environment.swift in Sources */,
 			);
