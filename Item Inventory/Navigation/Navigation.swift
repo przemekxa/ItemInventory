@@ -50,7 +50,7 @@ class Navigation: NSObject, UITabBarControllerDelegate {
                                                      selectedImage: UIImage(systemName: "map.fill"))
 
         // QR View
-        let qra = QRView() { result in
+        let qra = QRBarcodeView(objectTypes: [.qr]) { result in
             print("Result:", result)
         }
         let qrhost = UIHostingController(rootView: qra)

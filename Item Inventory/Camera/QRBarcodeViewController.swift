@@ -14,12 +14,13 @@ protocol QRViewControllerDelegate: AnyObject {
     func error()
 }
 
-class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 
     var session: AVCaptureSession?
     var preview: AVCaptureVideoPreviewLayer?
 
     weak var delegate: QRViewControllerDelegate?
+    var objectTypes: [AVMetadataObject.ObjectType] = [.qr]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -114,7 +115,7 @@ class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         if session.canAddOutput(metadataOutput) {
             session.addOutput(metadataOutput)
             metadataOutput.setMetadataObjectsDelegate(self, queue: .main)
-            metadataOutput.metadataObjectTypes = [.qr]
+            metadataOutput.metadataObjectTypes = objectTypes
         } else {
             errorAlert("Cannot scan code")
             return
@@ -150,13 +151,33 @@ class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
 
 }
 
-struct QRView: UIViewControllerRepresentable {
+struct QRBarcodeView: UIViewControllerRepresentable {
 
     typealias Handler = (Result) -> ()
 
     enum Result {
         case success(String)
         case error
+    }
+
+    enum ObjectType  {
+        case qr
+        case ean8
+        case ean13
+        case upc
+
+        fileprivate var avMetadataObject: AVMetadataObject.ObjectType {
+            switch self {
+            case .qr:
+                return .qr
+            case .ean8:
+                return .ean8
+            case .ean13:
+                return .ean13
+            case .upc:
+                return .upce
+            }
+        }
     }
 
     class Coordinator: QRViewControllerDelegate {
@@ -178,18 +199,21 @@ struct QRView: UIViewControllerRepresentable {
     }
 
     private let handler: Handler
+    private let objectTypes: [AVMetadataObject.ObjectType]
 
-    init(handler: @escaping Handler) {
+    init(objectTypes: [ObjectType], handler: @escaping Handler) {
         self.handler = handler
+        self.objectTypes = objectTypes.map { $0.avMetadataObject }
     }
 
-    func makeUIViewController(context: Context) -> QRViewController {
-        let controller = QRViewController()
+    func makeUIViewController(context: Context) -> QRBarcodeViewController {
+        let controller = QRBarcodeViewController()
         controller.delegate = context.coordinator
+        controller.objectTypes = objectTypes
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: QRViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: QRBarcodeViewController, context: Context) {
         
     }
 

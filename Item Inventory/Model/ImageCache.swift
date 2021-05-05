@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import OrderedCollections
 
 class ImageCache: ObservableObject {
 
@@ -23,7 +24,7 @@ class ImageCache: ObservableObject {
     private let initialImages: Set<Identifier>
 
     /// All images
-    @Published private(set) var images: Set<Identifier>
+    @Published private(set) var images: OrderedSet<Identifier>
 
     /// Remaining operations in progress
     @Published private(set) var inProgress = 0
@@ -31,7 +32,7 @@ class ImageCache: ObservableObject {
     init(_ storage: ImageStore, initial images: [Identifier]) {
         self.store = storage
         self.initialImages = Set(images)
-        self.images = Set(images)
+        self.images = OrderedSet(images)
     }
 
     /// Add a new image
@@ -39,7 +40,7 @@ class ImageCache: ObservableObject {
         inProgress += 1
         store.save(image)
             .sink { [weak self] identifier in
-                self?.images.insert(identifier)
+                self?.images.append(identifier)
                 self?.inProgress -= 1
             }
             .store(in: &operations)
@@ -48,20 +49,19 @@ class ImageCache: ObservableObject {
     /// Delete an existing image
     func delete(_ identifier: Identifier) {
 
-        // If the old image is in initial images - don't remove (yet)
-        if initialImages.contains(identifier) {
+        // Remove from the list of current images
+        images.remove(identifier)
 
-            // Remove just from the list of current images
-            images.remove(identifier)
+        // If the old image is not in initial images - remove it
+        if !initialImages.contains(identifier) {
 
-        } else {
             inProgress += 1
             store.delete(identifier)
                 .sink { [weak self] in
-                    self?.images.insert(identifier)
                     self?.inProgress -= 1
                 }
                 .store(in: &operations)
+
         }
     }
 
@@ -76,6 +76,12 @@ class ImageCache: ObservableObject {
         
     }
 
+    /// Move the images
+    func move(from offsets: IndexSet, to offset: Int) {
+        var array = Array(images)
+        array.move(fromOffsets: offsets, toOffset: offset)
+        images = OrderedSet(array)
+    }
 
     /// Save the changes
     ///

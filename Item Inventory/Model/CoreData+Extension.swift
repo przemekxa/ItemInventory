@@ -16,3 +16,23 @@ extension Box {
         "S-" + String(format: "%08d", code)
     }
 }
+
+extension Item {
+
+    /// Image identifiers
+    var imageIdentifiers: [String] {
+        get {
+            if let uuids = imageUUIDs {
+                return uuids
+                    .split(separator: ",")
+                    .filter { $0.count == 36 }
+                    .map { String($0) }
+
+            }
+            return []
+        }
+        set {
+            imageUUIDs = newValue.joined(separator: ",")
+        }
+    }
+}

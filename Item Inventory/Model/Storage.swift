@@ -18,6 +18,8 @@ class Storage {
 
     private var backgroundContext: NSManagedObjectContext
 
+    private let logger = Logger.storage
+
     static let shared = Storage()
 
     let imageStore = ImageStore()
@@ -36,6 +38,39 @@ class Storage {
         context = container.viewContext
         context.automaticallyMergesChangesFromParent = true
         backgroundContext = container.newBackgroundContext()
+
+        deleteOrphanImages()
+    }
+
+    /// Delete orphan images (images that are on disk, but not in the database)
+    private func deleteOrphanImages() {
+
+        container.performBackgroundTask { [weak self] context in
+            guard let self = self else { return }
+            // Get all boxes and all items
+            let boxFetchRequest: NSFetchRequest<Box> = Box.fetchRequest()
+            let itemFetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+            let boxes = (try? context.fetch(boxFetchRequest)) ?? []
+            let items = (try? context.fetch(itemFetchRequest)) ?? []
+
+            // Get box and item image identifiers
+            let boxImages = Set(boxes.compactMap { $0.imageUUID })
+            let itemImages = Set(items.flatMap { $0.imageIdentifiers })
+            let inDatabase = boxImages.union(itemImages)
+
+            // Get identifiers on disk
+            let onDisk = self.imageStore.savedIdentifiers()
+
+            let orphanImages = onDisk.subtracting(inDatabase)
+
+            // Delete orphan images
+            if !orphanImages.isEmpty {
+                self.logger.warning("Found orphan images on disk, deleting them")
+                self.imageStore.delete(Array(orphanImages))
+                    .sink {}
+                    .store(in: &self.imageOperations)
+            }
+        }
     }
 
     /// Save any changes to the database
@@ -52,7 +87,7 @@ class Storage {
 
     /// Delete an object
     /// - Parameter id: ID of the object
-    func delete(_ id: NSManagedObjectID) {
+    private func delete(_ id: NSManagedObjectID) {
         if let object = try? context.existingObject(with: id) {
             context.delete(object)
             context.perform {
@@ -84,9 +119,20 @@ class Storage {
         save()
     }
 
+    /// Delete a location
+    func delete(_ location: Location) {
+        delete(location.objectID)
+    }
+
     // MARK: - Box
 
     private let LAST_BOX_ID_KEY = "lastBoxId"
+
+    /// Get all boxes
+//    var boxes: [Box] {
+//        let fetchRequest: NSFetchRequest<Box> = Box.fetchRequest()
+//        return (try? context.fetch(fetchRequest)) ?? []
+//    }
 
 
     /// ID of the last saved box
@@ -147,6 +193,7 @@ class Storage {
 
     }
 
+    /// Edit an existing box
     func editBox(box: Box,
                  name: String,
                  location: Location,
@@ -171,6 +218,62 @@ class Storage {
         }
         delete(box.objectID)
     }
+
+
+    // MARK: - Item
+
+//    /// Get all items
+//    var items: [Item] {
+//        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+//        return (try? context.fetch(fetchRequest)) ?? []
+//    }
+
+    /// Add a new item
+    func addItem(name: String,
+                 box: Box,
+                 keywords: String,
+                 comment: String,
+                 barcode: String?,
+                 imageIdentifiers: [ImageStore.Identifier]) {
+        let item = Item(context: context)
+        item.name = name
+        item.box = box
+        item.keywords = keywords
+        item.comment = comment
+        item.barcode = barcode
+        item.imageIdentifiers = imageIdentifiers
+        save()
+    }
+
+    /// Edit an existing item
+    func editItem(_ item: Item,
+                  name: String,
+                  box: Box,
+                  keywords: String,
+                  comment: String,
+                  barcode: String?,
+                  imageIdentifiers: [ImageStore.Identifier]) {
+        item.name = name
+        item.box = box
+        item.keywords = keywords
+        item.comment = comment
+        item.barcode = barcode
+        item.imageIdentifiers = imageIdentifiers
+        save()
+    }
+
+
+    /// Delete an item
+    func delete(_ item: Item) {
+        let imageIdentifiers = item.imageIdentifiers
+        if !imageIdentifiers.isEmpty {
+            imageStore.delete(imageIdentifiers)
+                .sink { }
+                .store(in: &imageOperations)
+        }
+        delete(item.objectID)
+    }
+
 
     // MARK: - Images
 

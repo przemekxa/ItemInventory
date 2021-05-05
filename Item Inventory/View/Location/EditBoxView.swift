@@ -143,7 +143,7 @@ struct EditBoxView: View {
                 }
             }
             .sheet(isPresented: $isScanning) {
-                QRView(handler: handleScan(result:))
+                QRBarcodeView(objectTypes: [.qr], handler: handleScan(result:))
             }
             .sheet(item: $pickingImage) { method in
                 ImagePicker(image: $image, sourceType: method)
@@ -203,7 +203,7 @@ struct EditBoxView: View {
     }
 
     /// Handle the QR scan result
-    private func handleScan(result: QRView.Result) {
+    private func handleScan(result: QRBarcodeView.Result) {
         isScanning = false
         if case .success(let code) = result {
             let regex = try! NSRegularExpression(pattern: #"S-\d{8}"#)

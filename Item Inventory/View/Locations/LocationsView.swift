@@ -36,7 +36,7 @@ struct LocationsView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
                             Button {
-                                storage.delete(location.objectID)
+                                storage.delete(location)
                             } label: {
                                 Label("Delete", systemImage: "trash")
                             }
@@ -44,7 +44,7 @@ struct LocationsView: View {
                 }
                 .onDelete { indexSet in
                     indexSet
-                        .map { locations[$0].objectID }
+                        .map { locations[$0] }
                         .forEach { storage.delete($0) }
                 }
             }

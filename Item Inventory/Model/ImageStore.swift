@@ -60,6 +60,20 @@ class ImageStore {
         url.appendingPathComponent(identifier + ".jpg")
     }
 
+    /// Return all files saved on disk
+    func savedIdentifiers() -> Set<Identifier> {
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(atPath: url.path)
+                .filter { $0.hasSuffix(".jpg") }
+                .map { String($0.dropLast(4)) }
+            return Set(contents)
+        } catch {
+            logger.error("Cannot get contents of images directory")
+        }
+
+        return Set()
+    }
+
     /// Save an image
     func save(_ image: UIImage) -> Future<Identifier, Never> {
         Future { promise in
