@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 struct BoxSearchView: View {
 
@@ -14,6 +15,9 @@ struct BoxSearchView: View {
 
     @Environment(\.presentationMode)
     private var presentationMode
+
+    @State private var successPlayer: AVAudioPlayer?
+    @State private var errorPlayer: AVAudioPlayer?
 
     var box: Box
 
@@ -32,8 +36,10 @@ struct BoxSearchView: View {
                 Spacer()
                 if let (mode, name, qrCode) = result {
                     BoxSearchCapsuleView(mode: mode, name: name, qrCode: qrCode) {
-                        result = nil
-                        isActive = true
+                        withAnimation {
+                            result = nil
+                            isActive = true
+                        }
                     }
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .animation(.spring())
@@ -57,6 +63,13 @@ struct BoxSearchView: View {
             }
 
         }
+        .onAppear {
+            prepareAudio()
+        }
+        .onDisappear {
+            successPlayer?.stop()
+            errorPlayer?.stop()
+        }
     }
 
     private func handleResult(result: QRBarcodeView.Result) {
@@ -65,14 +78,30 @@ struct BoxSearchView: View {
         switch result {
         case .success(let code):
             if box.qrCode == code {
+                successPlayer?.play()
                 self.result = (.correctBox, box.name ?? "?", code)
             } else if let identifier = Box.qrCodeToInt(code), let box = storage.box(with: identifier) {
+                errorPlayer?.play()
                 self.result = (.wrongBox, box.name ?? "?", code)
             } else {
+                errorPlayer?.play()
                 self.result = (.boxNotFound, nil, nil)
             }
         case .error:
+            errorPlayer?.play()
             self.result = (.error, nil, nil)
+        }
+    }
+
+    /// Prepare the players for playing
+    private func prepareAudio() {
+        if let successData = NSDataAsset(name: "success")?.data {
+            successPlayer = try? AVAudioPlayer(data: successData)
+            successPlayer?.prepareToPlay()
+        }
+        if let errorData = NSDataAsset(name: "error")?.data {
+            errorPlayer = try? AVAudioPlayer(data: errorData)
+            errorPlayer?.prepareToPlay()
         }
     }
 }
