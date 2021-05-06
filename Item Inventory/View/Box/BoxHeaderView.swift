@@ -15,6 +15,12 @@ struct BoxHeaderView: View {
 
     @ObservedObject var box: Box
 
+    @Binding var isEditing: Bool
+
+    @Binding var showDeleteSheet: Bool
+
+    @Binding var showFindBoxSheet: Bool
+
     @State private var isExpanded = false
 
     var body: some View {
@@ -55,12 +61,17 @@ struct BoxHeaderView: View {
                 }
                 .padding(.vertical, 6.0)
                 Button {
-                    // TODO: Edit
+                    showFindBoxSheet = true
+                } label: {
+                    Label("Find box by QR code", systemImage: "qrcode")
+                }
+                Button {
+                    isEditing = true
                 } label: {
                     Label("Edit box", systemImage: "pencil")
                 }
                 Button {
-                    // TODO: Delete
+                    showDeleteSheet = true
                 } label: {
                     Label("Delete box", systemImage: "trash")
                 }
@@ -95,6 +106,9 @@ struct BoxHeaderView: View {
 
 struct BoxHeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        BoxHeaderView(box: Box())
+        BoxHeaderView(box: Box(),
+                      isEditing: .constant(false),
+                      showDeleteSheet: .constant(false),
+                      showFindBoxSheet: .constant(false))
     }
 }

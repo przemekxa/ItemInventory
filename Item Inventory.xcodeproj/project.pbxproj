@@ -13,7 +13,6 @@
 		0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAED2640AE200071E633 /* CoreData+Extension.swift */; };
 		0121CAF02640AF490071E633 /* BoxHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAEF2640AF490071E633 /* BoxHeaderView.swift */; };
 		0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121F0AC263DB04E00CEA168 /* Identifiable.swift */; };
-		014518252642DED800596FCC /* ItemCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518242642DED800596FCC /* ItemCellView.swift */; };
 		014518272642E53700596FCC /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518262642E53700596FCC /* ItemView.swift */; };
 		014518292642E58D00596FCC /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518282642E58D00596FCC /* HeaderCell.swift */; };
 		01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC0A263D689000940A47 /* AppDelegate.swift */; };
@@ -36,6 +35,9 @@
 		01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C71434263DB8780028A8C8 /* ImagePicker.swift */; };
 		01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9DE53264161DD006E6C7D /* ItemEditView.swift */; };
 		01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 01C9DE5626417890006E6C7D /* OrderedCollections */; };
+		01CB751D2643597300273947 /* BoxSearchCapsuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */; };
+		01D8484426430BD4008A5FA2 /* GeneralSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D8484326430BD4008A5FA2 /* GeneralSpaceView.swift */; };
+		01D8484626431A6C008A5FA2 /* BoxSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D8484526431A6C008A5FA2 /* BoxSearchView.swift */; };
 		01F1C8A2263E042700DFA8D0 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 01F1C8A1263E042700DFA8D0 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
@@ -46,7 +48,6 @@
 		0121CAED2640AE200071E633 /* CoreData+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CoreData+Extension.swift"; sourceTree = "<group>"; };
 		0121CAEF2640AF490071E633 /* BoxHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxHeaderView.swift; sourceTree = "<group>"; };
 		0121F0AC263DB04E00CEA168 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
-		014518242642DED800596FCC /* ItemCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCellView.swift; sourceTree = "<group>"; };
 		014518262642E53700596FCC /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		014518282642E58D00596FCC /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
 		01B2EC07263D689000940A47 /* Item Inventory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Item Inventory.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +71,9 @@
 		01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRBarcodeViewController.swift; sourceTree = "<group>"; };
 		01C71434263DB8780028A8C8 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		01C9DE53264161DD006E6C7D /* ItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEditView.swift; sourceTree = "<group>"; };
+		01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxSearchCapsuleView.swift; sourceTree = "<group>"; };
+		01D8484326430BD4008A5FA2 /* GeneralSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSpaceView.swift; sourceTree = "<group>"; };
+		01D8484526431A6C008A5FA2 /* BoxSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxSearchView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +94,9 @@
 			children = (
 				0121CAEB264096D10071E633 /* BoxView.swift */,
 				0121CAEF2640AF490071E633 /* BoxHeaderView.swift */,
+				01D8484326430BD4008A5FA2 /* GeneralSpaceView.swift */,
+				01D8484526431A6C008A5FA2 /* BoxSearchView.swift */,
+				01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */,
 			);
 			path = Box;
 			sourceTree = "<group>";
@@ -211,7 +218,6 @@
 			isa = PBXGroup;
 			children = (
 				01C9DE53264161DD006E6C7D /* ItemEditView.swift */,
-				014518242642DED800596FCC /* ItemCellView.swift */,
 				014518262642E53700596FCC /* ItemView.swift */,
 			);
 			path = Item;
@@ -295,6 +301,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01D8484626431A6C008A5FA2 /* BoxSearchView.swift in Sources */,
+				01CB751D2643597300273947 /* BoxSearchCapsuleView.swift in Sources */,
 				01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */,
 				01B2EC2F263D798300940A47 /* EditLocationView.swift in Sources */,
 				011DBA72263F4B8700E5713A /* ImageCache.swift in Sources */,
@@ -310,11 +318,11 @@
 				01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */,
 				01B2EC34263D89E600940A47 /* LocationView.swift in Sources */,
 				01B2EC2D263D73D800940A47 /* LocationsView.swift in Sources */,
-				014518252642DED800596FCC /* ItemCellView.swift in Sources */,
 				01B2EC12263D689000940A47 /* Item_Inventory.xcdatamodeld in Sources */,
 				01B2EC36263D919800940A47 /* EmptyableList.swift in Sources */,
 				0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */,
 				01B2EC24263D6CE100940A47 /* Storage.swift in Sources */,
+				01D8484426430BD4008A5FA2 /* GeneralSpaceView.swift in Sources */,
 				014518272642E53700596FCC /* ItemView.swift in Sources */,
 				01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */,
 				0121CAEC264096D10071E633 /* BoxView.swift in Sources */,

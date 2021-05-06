@@ -20,6 +20,8 @@ struct ItemView: View {
     @ObservedObject
     private var item: Item
 
+    @State private var showDeleteAlert = false
+
     @State private var isEditing = false
 
     init(_ item: Item) {
@@ -29,18 +31,17 @@ struct ItemView: View {
     var body: some View {
         List {
             Section(header: Text("Details")) {
-                HeaderCell("Name") { Text(item.name ?? "?") }
-                HeaderCell("Location") { Text(item.box?.location?.name ?? "?") }
-                HeaderCell("Box") { Text(item.box?.name ?? "?") }
-                HeaderCell("Comment") { Text(item.comment ?? "") }
-                HeaderCell("Keywords") { Text(item.keywords ?? "") }
+                HeaderCell(Text("Name")) { Text(item.name ?? "?") }
+                HeaderCell(Text("Location")) { Text(item.box?.location?.name ?? "-") }
+                HeaderCell(Text("Box")) { Text(item.box?.name ?? "-") }
+                HeaderCell(Text("Comment")) { Text(item.comment ?? "-") }
+                HeaderCell(Text("Keywords")) { Text(item.keywords ?? "-") }
                 if let barcode = item.barcode {
-                    HeaderCell("Barcode") {
+                    HeaderCell(Text("Barcode")) {
                         Text(barcode)
                             .font(.system(.body, design: .monospaced))
                     }
                 }
-
             }
 
             if !item.imageIdentifiers.isEmpty {
@@ -64,8 +65,7 @@ struct ItemView: View {
             }
             ToolbarItem(placement: .destructiveAction) {
                 Button {
-                    storage.delete(item)
-                    presentationMode.wrappedValue.dismiss()
+                    showDeleteAlert = true
                 } label: { Image(systemName: "trash") }
             }
             // SwiftUI back button disappearing workaround
@@ -73,6 +73,15 @@ struct ItemView: View {
         }
         .sheet(isPresented: $isEditing) {
             ItemEditView(storage, item: item)
+        }
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(title: Text("Are you sure you want to delete this item?"),
+                  primaryButton: .cancel(),
+                  secondaryButton: .destructive(Text("Delete")) {
+                    storage.delete(item)
+                    presentationMode.wrappedValue.dismiss()
+                  }
+            )
         }
         .listStyle(InsetGroupedListStyle())
     }

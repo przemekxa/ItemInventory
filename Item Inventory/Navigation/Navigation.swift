@@ -50,10 +50,10 @@ class Navigation: NSObject, UITabBarControllerDelegate {
                                                      selectedImage: UIImage(systemName: "map.fill"))
 
         // QR View
-        let qra = QRBarcodeView(objectTypes: [.qr]) { result in
-            print("Result:", result)
-        }
-        let qrhost = UIHostingController(rootView: qra)
+//        let qra = QRBarcodeView(objectTypes: [.qr, .ean8, .ean13, .upc]) { result in
+//            print("Result:", result)
+//        }
+        let qrhost = UIHostingController(rootView: BoxSearchView(box: Box()))
 
         tabBar.setViewControllers([locationsViewHosting, secondHost, qrhost], animated: false)
     }

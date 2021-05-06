@@ -1,14 +1,14 @@
 //
-//  BoxView.swift
+//  GeneralSpaceView.swift
 //  Item Inventory
 //
-//  Created by Przemek Ambroży on 03/05/2021.
+//  Created by Przemek Ambroży on 05/05/2021.
 //
 
 import SwiftUI
 import Kingfisher
 
-struct BoxView: View {
+struct GeneralSpaceView: View {
 
     @Environment(\.storage)
     private var storage
@@ -16,40 +16,19 @@ struct BoxView: View {
     @Environment(\.presentationMode)
     private var presentationMode
 
-    @FetchRequest
+    @FetchRequest(entity: Item.entity(),
+                  sortDescriptors: [NSSortDescriptor(keyPath: \Item.name, ascending: true)],
+                  predicate: NSPredicate(format: "box == nil"))
     private var items: FetchedResults<Item>
-
-    @ObservedObject
-    private var box: Box
 
     @State private var addItemSheet = false
 
     @State private var editItemSheet: Item?
 
-    @State private var isEditing = false
-
-    @State private var showDeleteSheet = false
-
-    @State private var showFindBoxSheet = false
-
-    init(_ box: Box) {
-        self._box = ObservedObject(initialValue: box)
-
-        let sortDescriptor = NSSortDescriptor(keyPath: \Item.name, ascending: true)
-        let predicate = NSPredicate(format: "box == %@", box)
-
-        _items = FetchRequest(entity: Item.entity(),
-                              sortDescriptors: [sortDescriptor],
-                              predicate: predicate)
-    }
-
     var body: some View {
         List {
-            Section(header: Text("Box")) {
-                BoxHeaderView(box: box,
-                              isEditing: $isEditing,
-                              showDeleteSheet: $showDeleteSheet,
-                              showFindBoxSheet: $showFindBoxSheet)
+            Section(header: Text("About")) {
+                Text("This space contains all items that are not in any box.")
             }
             Section(header: Text("Items"), footer: Text("Items: \(items.count)")) {
                 if items.isEmpty {
@@ -82,30 +61,8 @@ struct BoxView: View {
             }
         }
         .listStyle(InsetGroupedListStyle())
-        .navigationTitle(box.name ?? "?")
+        .navigationTitle("General space")
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button {
-                        isEditing = true
-                    } label: {
-                        Label("Edit box", systemImage: "pencil")
-                    }
-                    Button {
-                        showDeleteSheet = true
-                    } label: {
-                        Label("Delete box", systemImage: "trash")
-                    }
-                    Button {
-                        showFindBoxSheet = true
-                    } label: {
-                        Label("Find box by QR code", systemImage: "qrcode")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .imageScale(.large)
-                }
-            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     addItemSheet = true
@@ -117,19 +74,10 @@ struct BoxView: View {
             ToolbarItem(placement: .navigationBarLeading) { HStack {} }
         }
         .sheet(isPresented: $addItemSheet) {
-            ItemEditView(storage, box: box)
+            ItemEditView(storage, box: nil)
         }
         .sheet(item: $editItemSheet) { item in
             ItemEditView(storage, item: item)
-        }
-        .sheet(isPresented: $isEditing) {
-            EditBoxView(storage, box: box)
-        }
-        .actionSheet(isPresented: $showDeleteSheet) {
-            deleteActionSheet()
-        }
-        .fullScreenCover(isPresented: $showFindBoxSheet) {
-            BoxSearchView(box: box)
         }
     }
 
@@ -181,43 +129,12 @@ struct BoxView: View {
                     .foregroundColor(Color(UIColor.secondaryLabel))
             }
         }
-
     }
 
-    func deleteActionSheet() -> ActionSheet {
-
-        var buttons = [ActionSheet.Button.cancel()]
-        var message: Text?
-
-        if items.isEmpty {
-            buttons.append(.destructive(Text("Delete box")) {
-                storage.delete(box, keepItems: false)
-                presentationMode.wrappedValue.dismiss()
-            })
-        } else {
-            message = Text("If you choose \"Delete box, keep items\", your items will be moved to general space.")
-            buttons.append(.destructive(Text("Delete box and items inside")) {
-                storage.delete(box, keepItems: false)
-                presentationMode.wrappedValue.dismiss()
-            })
-            buttons.append(.destructive(Text("Delete box, keep items")) {
-                storage.delete(box, keepItems: true)
-                presentationMode.wrappedValue.dismiss()
-            })
-        }
-
-        return ActionSheet(title: Text("Do you want to delete this box?"),
-                           message: message,
-                           buttons: buttons)
-    }
-
-    
 }
 
-struct BoxView_Previews: PreviewProvider {
+struct GeneralSpaceView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            BoxView(Box())
-        }
+        GeneralSpaceView()
     }
 }

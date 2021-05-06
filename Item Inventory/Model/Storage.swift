@@ -87,11 +87,13 @@ class Storage {
 
     /// Delete an object
     /// - Parameter id: ID of the object
-    private func delete(_ id: NSManagedObjectID) {
+    private func delete(_ id: NSManagedObjectID, save: Bool = true) {
         if let object = try? context.existingObject(with: id) {
             context.delete(object)
-            context.perform {
-                self.save()
+            if save {
+                context.perform {
+                    self.save()
+                }
             }
         }
     }
@@ -144,9 +146,16 @@ class Storage {
     /// Check if a box with given id exists
     func hasBox(with id: Int) -> Bool {
         let fetchRequest: NSFetchRequest<Box> = Box.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %i", id)
+        fetchRequest.predicate = NSPredicate(format: "code == %i", id)
         let count = (try? context.count(for: fetchRequest)) ?? 0
         return count > 0
+    }
+
+    /// Search for a box with a given ID
+    func box(with id: Int) -> Box? {
+        let fetchRequest: NSFetchRequest<Box> = Box.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "code == %i", id)
+        return ((try? context.fetch(fetchRequest)) ?? []).first
     }
 
     /// Add a new box
@@ -210,11 +219,24 @@ class Storage {
     }
 
     /// Delete a box
-    func delete(_ box: Box) {
+    /// - Parameter box: Box to be deleted
+    /// - Parameter keepItems: If true, items will be kept, having `box` parameter set to nil
+    func delete(_ box: Box, keepItems: Bool = false) {
         if let identifier = box.imageUUID {
             imageStore.delete(identifier)
                 .sink { }
                 .store(in: &imageOperations)
+        }
+        if let items = box.items?.allObjects as? [Item] {
+            if keepItems {
+                for item in items {
+                    item.box = nil
+                }
+            } else {
+                for item in items {
+                    delete(item, save: false)
+                }
+            }
         }
         delete(box.objectID)
     }
@@ -230,7 +252,7 @@ class Storage {
 
     /// Add a new item
     func addItem(name: String,
-                 box: Box,
+                 box: Box?,
                  keywords: String,
                  comment: String,
                  barcode: String?,
@@ -248,7 +270,7 @@ class Storage {
     /// Edit an existing item
     func editItem(_ item: Item,
                   name: String,
-                  box: Box,
+                  box: Box?,
                   keywords: String,
                   comment: String,
                   barcode: String?,
@@ -264,14 +286,14 @@ class Storage {
 
 
     /// Delete an item
-    func delete(_ item: Item) {
+    func delete(_ item: Item, save: Bool = true) {
         let imageIdentifiers = item.imageIdentifiers
         if !imageIdentifiers.isEmpty {
             imageStore.delete(imageIdentifiers)
                 .sink { }
                 .store(in: &imageOperations)
         }
-        delete(item.objectID)
+        delete(item.objectID, save: save)
     }
 
 

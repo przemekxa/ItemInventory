@@ -24,8 +24,8 @@ struct LocationView: View {
     @State
     private var addBoxSheet = false
 
-    @State
-    private var editBoxSheet: Box?
+    @State private var editBoxSheet: Box?
+    @State private var deleteBoxSheet: Box?
 
     init(_ location: Location) {
         self._location = ObservedObject(initialValue: location)
@@ -51,16 +51,21 @@ struct LocationView: View {
                             Label("Edit", systemImage: "pencil")
                         }
                         Button {
-                            storage.delete(box)
+                            deleteBoxSheet = box
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
                     }
             }
             .onDelete { indexSet in
-                indexSet
-                    .map { boxes[$0] }
-                    .forEach { storage.delete($0) }
+                if let index = indexSet.first {
+                    let items = boxes[index].items?.allObjects as? [Item] ?? []
+                    if items.isEmpty {
+                        storage.delete(boxes[index], keepItems: false)
+                    } else {
+                        deleteBoxSheet = boxes[index]
+                    }
+                }
             }
         }
         .listStyle(InsetGroupedListStyle())
@@ -78,6 +83,7 @@ struct LocationView: View {
         .sheet(item: $editBoxSheet) { box in
             EditBoxView(storage, box: box)
         }
+        .actionSheet(item: $deleteBoxSheet, content: deleteBoxActionSheet(_:))
     }
 
     /// Cell view for a box
@@ -113,6 +119,32 @@ struct LocationView: View {
                     .foregroundColor(Color(UIColor.secondaryLabel))
             }
         }
+    }
+
+    private func deleteBoxActionSheet(_ box: Box) -> ActionSheet {
+
+        let items: [Item] = (box.items?.allObjects as? [Item]) ?? []
+
+        var buttons = [ActionSheet.Button.cancel()]
+        var message: Text?
+
+        if items.isEmpty {
+            buttons.append(.destructive(Text("Delete box")) {
+                storage.delete(box, keepItems: false)
+            })
+        } else {
+            message = Text("If you choose \"Delete box, keep items\", your items will be moved to general space.")
+            buttons.append(.destructive(Text("Delete box and items inside")) {
+                storage.delete(box, keepItems: false)
+            })
+            buttons.append(.destructive(Text("Delete box, keep items")) {
+                storage.delete(box, keepItems: true)
+            })
+        }
+
+        return ActionSheet(title: Text("Do you want to delete this box?"),
+                           message: message,
+                           buttons: buttons)
     }
 
 }

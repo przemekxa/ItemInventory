@@ -25,7 +25,7 @@ struct ItemEditView: View {
 
     @State private var name: String = ""
 
-    @State private var box: Box
+    @State private var box: Box?
 
     @State private var comment: String = ""
 
@@ -47,7 +47,7 @@ struct ItemEditView: View {
     @State private var isSaving = false
 
     /// Create a new item
-    init(_ storage: Storage, box: Box) {
+    init(_ storage: Storage, box: Box?) {
         _box = State(initialValue: box)
         _cache = ObservedObject(initialValue: storage.imageCache(initial: []))
     }
@@ -56,7 +56,7 @@ struct ItemEditView: View {
     init(_ storage: Storage, item: Item) {
         self.item = item
         _name = State(initialValue: item.name ?? "")
-        _box = State(initialValue: item.box!)
+        _box = State(initialValue: item.box)
         _comment = State(initialValue: item.comment ?? "")
         _keywords = State(initialValue: item.keywords ?? "")
         _barcode = State(initialValue: item.barcode)
@@ -69,8 +69,9 @@ struct ItemEditView: View {
                 Section {
                     TextField("Name", text: $name)
                     Picker("Box", selection: $box) {
+                        Text("General space").tag(nil as Box?)
                         ForEach(allBoxes(), id: \.0) { (box, name) in
-                            Text(name).id(box)
+                            Text(name).tag(box as Box?)
                         }
                     }
                     .disabled(editMode == .active)

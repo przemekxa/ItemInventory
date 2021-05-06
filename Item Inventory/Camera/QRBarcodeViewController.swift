@@ -10,7 +10,7 @@ import AVFoundation
 import SwiftUI
 
 protocol QRViewControllerDelegate: AnyObject {
-    func qrCode(code: String)
+    func code(_ code: String)
     func error()
 }
 
@@ -19,8 +19,18 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     var session: AVCaptureSession?
     var preview: AVCaptureVideoPreviewLayer?
 
-    weak var delegate: QRViewControllerDelegate?
+    /// Whether the capture session showld be running
+    var isActive: Bool = true {
+        didSet {
+            if let session = session, !session.isRunning, isActive {
+                session.startRunning()
+            } else if let session = session, session.isRunning, !isActive {
+                session.stopRunning()
+            }
+        }
+    }
     var objectTypes: [AVMetadataObject.ObjectType] = [.qr]
+    weak var delegate: QRViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +42,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let session = session, !session.isRunning {
+        if let session = session, !session.isRunning, isActive {
             session.startRunning()
         }
     }
@@ -56,14 +66,9 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
             let readable = object as? AVMetadataMachineReadableCodeObject,
             let value = readable.stringValue {
 
+            isActive = false
 
-            if let session = session, session.isRunning {
-                session.stopRunning()
-            }
-
-            dismiss(animated: true, completion: nil)
-            delegate?.qrCode(code: value)
-
+            delegate?.code(value)
         }
 
     }
@@ -128,7 +133,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         preview?.videoGravity = .resizeAspectFill
         view.layer.addSublayer(preview!)
 
-
+        session.commitConfiguration()
         session.startRunning()
     }
 
@@ -154,6 +159,8 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 struct QRBarcodeView: UIViewControllerRepresentable {
 
     typealias Handler = (Result) -> ()
+
+    @Binding var active: Bool
 
     enum Result {
         case success(String)
@@ -188,7 +195,7 @@ struct QRBarcodeView: UIViewControllerRepresentable {
             self.handler = handler
         }
 
-        func qrCode(code: String) {
+        func code(_ code: String) {
             handler(.success(code))
         }
 
@@ -201,9 +208,10 @@ struct QRBarcodeView: UIViewControllerRepresentable {
     private let handler: Handler
     private let objectTypes: [AVMetadataObject.ObjectType]
 
-    init(objectTypes: [ObjectType], handler: @escaping Handler) {
+    init(objectTypes: [ObjectType], active: Binding<Bool>? = nil, handler: @escaping Handler) {
         self.handler = handler
         self.objectTypes = objectTypes.map { $0.avMetadataObject }
+        self._active = active ?? .constant(true)
     }
 
     func makeUIViewController(context: Context) -> QRBarcodeViewController {
@@ -214,7 +222,7 @@ struct QRBarcodeView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: QRBarcodeViewController, context: Context) {
-        
+        uiViewController.isActive = active
     }
 
     func makeCoordinator() -> Coordinator {

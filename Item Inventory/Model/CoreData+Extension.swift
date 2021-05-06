@@ -7,6 +7,16 @@
 
 import CoreData
 
+extension Location {
+
+    var hasBoxes: Bool {
+        if let boxes = boxes {
+            return boxes.count > 0
+        }
+        return false
+    }
+}
+
 extension Box {
 
     /// Formatted QR code
@@ -14,6 +24,25 @@ extension Box {
     /// The format: `S-00000000`
     var qrCode: String {
         "S-" + String(format: "%08d", code)
+    }
+
+    /// Convert QR code to Int
+    static func qrCodeToInt(_ code: String) -> Int? {
+        let regex = try! NSRegularExpression(pattern: #"^S-\d{8}$"#)
+        if regex.firstMatch(in: code,
+                            options: [],
+                            range: NSRange(location: 0, length: code.utf16.count)) != nil {
+            let startIndex = code.index(code.startIndex, offsetBy: 2)
+            let endIndex = code.index(code.startIndex, offsetBy: 9)
+            let id = Int(code[startIndex...endIndex])!
+            return id
+        }
+        return nil
+    }
+
+    /// Convert ID to QR code
+    static func intToQrCode(_ integer: Int) -> String {
+        "S-" + String(format: "%08d", integer)
     }
 }
 

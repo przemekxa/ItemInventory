@@ -9,18 +9,18 @@ import SwiftUI
 
 struct HeaderCell<Content: View>: View {
 
-    init(_ header: String, content: @escaping () -> Content) {
+    init(_ header: Text, content: @escaping () -> Content) {
         self.header = header
         self.content = content
     }
 
-    var header: String
+    var header: Text
 
     var content: () -> Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4.0) {
-            Text(header)
+            header
                 .font(.caption)
                 .foregroundColor(Color(UIColor.secondaryLabel))
             content()
@@ -31,7 +31,7 @@ struct HeaderCell<Content: View>: View {
 
 struct HeaderCell_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderCell("Example") {
+        HeaderCell(Text("Example")) {
             Text("Hello")
         }
     }
