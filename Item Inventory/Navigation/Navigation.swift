@@ -40,11 +40,13 @@ class Navigation: NSObject, UITabBarControllerDelegate {
                                                      selectedImage: UIImage(systemName: "map.fill"))
 
         // Second view
-        let second =  SearchVC(storage)
+        let searchVC =  SearchVC(storage)
+        let searchNavigationController = UINavigationController(rootViewController: searchVC)
+        searchNavigationController.navigationBar.prefersLargeTitles = true
 
-        second.tabBarItem = UITabBarItem(title: "Second",
-                                         image: UIImage(systemName: "map"),
-                                         selectedImage: UIImage(systemName: "map.fill"))
+        searchNavigationController.tabBarItem = UITabBarItem(title: "Second",
+                                                             image: UIImage(systemName: "map"),
+                                                             selectedImage: UIImage(systemName: "map.fill"))
 
         // QR View
 //        let qra = QRBarcodeView(objectTypes: [.qr, .ean8, .ean13, .upc]) { result in
@@ -52,7 +54,7 @@ class Navigation: NSObject, UITabBarControllerDelegate {
 //        }
         let qrhost = UIHostingController(rootView: BoxSearchView(box: Box()))
 
-        tabBar.setViewControllers([locationsViewHosting, second, qrhost], animated: false)
+        tabBar.setViewControllers([locationsViewHosting, searchNavigationController, qrhost], animated: false)
     }
 
 //    // Future - detect subsequent clicks

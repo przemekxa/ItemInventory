@@ -8,13 +8,15 @@
 import UIKit
 import CoreData
 
-class SearchVC: UIViewController, NSFetchedResultsControllerDelegate {
+class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchResultsUpdating {
     
     private var collectionView: UICollectionView!
     
     unowned private var storage: Storage!
     
     private var resultsController: NSFetchedResultsController<Item>!
+
+    private var searchController: UISearchController!
     
     private var dataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
     
@@ -29,11 +31,9 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print("DID LOAD")
 
         title = "Items"
-        
+
         // Configure the layout
         configureLayout()
         
@@ -42,8 +42,13 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate {
         
         // Make the fetch results controller
         makeFetchResultsController()
+
+        // Make teh search controller
+        makeSearchController()
+
+        navigationController?.navigationBar.sizeToFit()
+
     }
-    
     
     /// Configure the layout
     private func configureLayout() {
@@ -104,6 +109,18 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate {
         
         try? resultsController.performFetch()
     }
+
+
+    /// Make the search controller
+    private func makeSearchController() {
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search for an item"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
+    }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
@@ -126,6 +143,28 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate {
 
         snapshot.reloadItems(reloadIdentifiers)
         dataSource.apply(snapshot, animatingDifferences: true)
+    }
+
+    // Handle search results
+    func updateSearchResults(for searchController: UISearchController) {
+
+        // TODO: Make search smarter
+
+        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+            let newPredicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText)
+            if resultsController.fetchRequest.predicate != newPredicate {
+                resultsController.fetchRequest.predicate = newPredicate
+                try? resultsController.performFetch()
+            }
+        } else {
+            if resultsController.fetchRequest.predicate != nil {
+                resultsController.fetchRequest.predicate = nil
+                try? resultsController.performFetch()
+            }
+        }
+
+
+        print("Searched term:", searchController.searchBar.text as Any)
     }
 
 }
