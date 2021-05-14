@@ -34,6 +34,7 @@
 		01B2EC38263D94AB00940A47 /* EditBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC37263D94AB00940A47 /* EditBoxView.swift */; };
 		01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */; };
 		01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAB1EB264DD234001D792D /* ItemListCell.swift */; };
+		01BC8117264EE85B006079B1 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BC8116264EE85B006079B1 /* ScannerView.swift */; };
 		01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C71434263DB8780028A8C8 /* ImagePicker.swift */; };
 		01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9DE53264161DD006E6C7D /* ItemEditView.swift */; };
 		01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 01C9DE5626417890006E6C7D /* OrderedCollections */; };
@@ -73,6 +74,7 @@
 		01B2EC37263D94AB00940A47 /* EditBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBoxView.swift; sourceTree = "<group>"; };
 		01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRBarcodeViewController.swift; sourceTree = "<group>"; };
 		01BAB1EB264DD234001D792D /* ItemListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListCell.swift; sourceTree = "<group>"; };
+		01BC8116264EE85B006079B1 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		01C71434263DB8780028A8C8 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		01C9DE53264161DD006E6C7D /* ItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEditView.swift; sourceTree = "<group>"; };
 		01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxSearchCapsuleView.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 				0121CAEA264096C10071E633 /* Box */,
 				01C9DE52264161C7006E6C7D /* Item */,
 				01ABA41326488A7E00D468AF /* Search */,
+				01BC8115264EE827006079B1 /* Scanner */,
 				01B2EC35263D919800940A47 /* EmptyableList.swift */,
 				014518282642E58D00596FCC /* HeaderCell.swift */,
 			);
@@ -226,6 +229,14 @@
 				01C71434263DB8780028A8C8 /* ImagePicker.swift */,
 			);
 			path = Camera;
+			sourceTree = "<group>";
+		};
+		01BC8115264EE827006079B1 /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				01BC8116264EE85B006079B1 /* ScannerView.swift */,
+			);
+			path = Scanner;
 			sourceTree = "<group>";
 		};
 		01C9DE52264161C7006E6C7D /* Item */ = {
@@ -319,6 +330,7 @@
 				01CB751D2643597300273947 /* BoxSearchCapsuleView.swift in Sources */,
 				01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */,
 				01B2EC2F263D798300940A47 /* EditLocationView.swift in Sources */,
+				01BC8117264EE85B006079B1 /* ScannerView.swift in Sources */,
 				011DBA72263F4B8700E5713A /* ImageCache.swift in Sources */,
 				01B2EC26263D6DE900940A47 /* Logger.swift in Sources */,
 				01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */,

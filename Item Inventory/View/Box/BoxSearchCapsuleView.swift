@@ -14,12 +14,13 @@ struct BoxSearchCapsuleView: View {
         case boxNotFound
         case wrongBox
         case correctBox
+        case notFound
 
         var image: String {
             switch self {
             case .error:
                 return "exclamationmark.circle.fill"
-            case .boxNotFound:
+            case .boxNotFound, .notFound:
                 return "questionmark.circle.fill"
             case .wrongBox:
                 return "multiply.circle.fill"
@@ -30,7 +31,7 @@ struct BoxSearchCapsuleView: View {
 
         var color: Color {
             switch self {
-            case .error, .wrongBox, .boxNotFound:
+            case .error, .wrongBox, .boxNotFound, .notFound:
                 return .red
             case .correctBox:
                 return .green
@@ -43,6 +44,8 @@ struct BoxSearchCapsuleView: View {
     var name: String?
 
     var qrCode: String?
+
+    var codeName: String? = "QR Code"
 
     var retry: () -> Void
 
@@ -64,7 +67,7 @@ struct BoxSearchCapsuleView: View {
                 }
                 if let code = qrCode {
                     HStack(spacing: 2.0) {
-                        Text("QR Code: ")
+                        Text((codeName ?? "") + ": ")
                             .font(.caption)
                         Text(code)
                             .font(.system(.caption, design: .monospaced))
@@ -107,6 +110,8 @@ struct BoxSearchCapsuleView: View {
             return "Wrong box"
         case .correctBox:
             return "Correct box"
+        case .notFound:
+            return "Not found"
         }
     }
 }

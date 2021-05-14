@@ -250,6 +250,13 @@ class Storage {
 //        return (try? context.fetch(fetchRequest)) ?? []
 //    }
 
+    /// Search for an item with a given barcode
+    func item(with barcode: String) -> Item? {
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "barcode == %@", barcode)
+        return ((try? context.fetch(fetchRequest)) ?? []).first
+    }
+
     /// Add a new item
     func addItem(name: String,
                  box: Box?,

@@ -205,7 +205,7 @@ struct EditBoxView: View {
     /// Handle the QR scan result
     private func handleScan(result: QRBarcodeView.Result) {
         isScanning = false
-        if case .success(let code) = result {
+        if case .success(let code, _) = result {
             let regex = try! NSRegularExpression(pattern: #"S-\d{8}"#)
             if regex.firstMatch(in: code,
                                 options: [],

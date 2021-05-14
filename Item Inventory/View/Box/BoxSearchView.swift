@@ -76,7 +76,7 @@ struct BoxSearchView: View {
         isActive = false
         // TODO: Play audio
         switch result {
-        case .success(let code):
+        case .success(let code, _):
             if box.qrCode == code {
                 successPlayer?.play()
                 self.result = (.correctBox, box.name ?? "?", code)

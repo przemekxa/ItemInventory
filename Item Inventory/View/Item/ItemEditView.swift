@@ -243,7 +243,7 @@ struct ItemEditView: View {
     /// Handle the barcode scan result
     private func handleScan(result: QRBarcodeView.Result) {
         isScanning = false
-        if case .success(let code) = result {
+        if case .success(let code, _) = result {
             barcode = code
         }
 

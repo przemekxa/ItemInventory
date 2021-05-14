@@ -10,7 +10,7 @@ import AVFoundation
 import SwiftUI
 
 protocol QRViewControllerDelegate: AnyObject {
-    func code(_ code: String)
+    func code(_ code: String, _ type: AVMetadataObject.ObjectType)
     func error()
 }
 
@@ -68,7 +68,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 
             isActive = false
 
-            delegate?.code(value)
+            delegate?.code(value, object.type)
         }
 
     }
@@ -163,7 +163,7 @@ struct QRBarcodeView: UIViewControllerRepresentable {
     @Binding var active: Bool
 
     enum Result {
-        case success(String)
+        case success(String, ObjectType)
         case error
     }
 
@@ -185,6 +185,21 @@ struct QRBarcodeView: UIViewControllerRepresentable {
                 return .upce
             }
         }
+
+        init?(_ from: AVMetadataObject.ObjectType) {
+            switch from {
+            case .qr:
+                self = .qr
+            case .ean8:
+                self = .ean8
+            case .ean13:
+                self = .ean13
+            case .upce:
+                self = .upc
+            default:
+                return nil
+            }
+        }
     }
 
     class Coordinator: QRViewControllerDelegate {
@@ -195,8 +210,10 @@ struct QRBarcodeView: UIViewControllerRepresentable {
             self.handler = handler
         }
 
-        func code(_ code: String) {
-            handler(.success(code))
+        func code(_ code: String, _ type: AVMetadataObject.ObjectType) {
+            if let type = ObjectType(type) {
+                handler(.success(code, type))
+            }
         }
 
         func error() {
