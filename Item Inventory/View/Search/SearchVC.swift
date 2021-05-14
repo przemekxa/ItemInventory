@@ -7,8 +7,9 @@
 
 import UIKit
 import CoreData
+import SwiftUI
 
-class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchResultsUpdating {
+class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchResultsUpdating, UICollectionViewDelegate {
     
     private var collectionView: UICollectionView!
     
@@ -49,40 +50,68 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         navigationController?.navigationBar.sizeToFit()
 
     }
-    
+
+    // MARK: - Collection View
+
     /// Configure the layout
     private func configureLayout() {
-        
+
         let configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
-        
-        // Create collection view with list layout
+
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 64.0, right: 0.0)
+        collectionView.alwaysBounceVertical = true
+        collectionView.delegate = self
+        collectionView.backgroundColor = .systemGroupedBackground
+
         view.addSubview(collectionView)
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 0.0),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0.0),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0.0),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0.0),
-        ])
-        
-        
-        print("Layout configured")
     }
-    
-    
-    /// Create a cell registration
-    private func cellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, Item>{
-        .init { cell, indexPath, item in
-            var configuration = cell.defaultContentConfiguration()
-            configuration.text = item.name ?? "Unknown name"
-            cell.contentConfiguration = configuration
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+
+        // Present the item details
+        if
+            let objectID = dataSource.itemIdentifier(for: indexPath),
+            let item = try? storage.context.existingObject(with: objectID) as? Item {
+            let itemView = ItemView(item, allowsOpeningBoxAndLocation: true)
+                .environment(\.managedObjectContext, storage.context)
+                .environment(\.storage, storage)
+            let itemHostingController = UIHostingController(rootView: itemView)
+            itemHostingController.title = item.name
+            navigationController?.pushViewController(itemHostingController, animated: true)
         }
     }
     
-    
+    /// Create a cell registration
+    private func cellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, Item> {
+        .init { [weak storage] cell, indexPath, item in
+
+            var configuration = ItemContentConfiguration()
+
+            // Name of the item
+            configuration.name = item.name
+
+            // Location of the item
+            if let box = item.box, let location = box.location {
+                configuration.location = .locationBox(location.name ?? "?", box.name ?? "?")
+            } else {
+                configuration.location = .generalSpace
+            }
+
+            // First image of the item
+            if let imageIdentifier = item.imageIdentifiers.first, let imageURL = storage?.imageStore.imageURL(for: imageIdentifier) {
+                configuration.imageURL = imageURL
+            }
+
+            cell.contentConfiguration = configuration
+            cell.accessories = [.disclosureIndicator()]
+
+        }
+    }
+
     /// Make data source
     private func makeDataSource() -> UICollectionViewDiffableDataSource<Int, NSManagedObjectID> {
         UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, objectID in
@@ -95,6 +124,8 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
                                                item: item)
         }
     }
+
+    // MARK: - Fetching results
     
     private func makeFetchResultsController() {
         // Create fetch request
@@ -110,18 +141,6 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         try? resultsController.performFetch()
     }
 
-
-    /// Make the search controller
-    private func makeSearchController() {
-        searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search for an item"
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = true
-    }
-    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
 
@@ -145,6 +164,19 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 
+    // MARK: - Search
+
+    /// Make the search controller
+    private func makeSearchController() {
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search for an item"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = true
+    }
+
     // Handle search results
     func updateSearchResults(for searchController: UISearchController) {
 
@@ -166,5 +198,7 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
 
         print("Searched term:", searchController.searchBar.text as Any)
     }
+
+
 
 }

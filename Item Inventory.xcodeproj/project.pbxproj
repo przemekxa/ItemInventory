@@ -33,6 +33,7 @@
 		01B2EC36263D919800940A47 /* EmptyableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC35263D919800940A47 /* EmptyableList.swift */; };
 		01B2EC38263D94AB00940A47 /* EditBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC37263D94AB00940A47 /* EditBoxView.swift */; };
 		01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */; };
+		01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAB1EB264DD234001D792D /* ItemListCell.swift */; };
 		01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C71434263DB8780028A8C8 /* ImagePicker.swift */; };
 		01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9DE53264161DD006E6C7D /* ItemEditView.swift */; };
 		01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 01C9DE5626417890006E6C7D /* OrderedCollections */; };
@@ -71,6 +72,7 @@
 		01B2EC35263D919800940A47 /* EmptyableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyableList.swift; sourceTree = "<group>"; };
 		01B2EC37263D94AB00940A47 /* EditBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBoxView.swift; sourceTree = "<group>"; };
 		01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRBarcodeViewController.swift; sourceTree = "<group>"; };
+		01BAB1EB264DD234001D792D /* ItemListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListCell.swift; sourceTree = "<group>"; };
 		01C71434263DB8780028A8C8 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		01C9DE53264161DD006E6C7D /* ItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEditView.swift; sourceTree = "<group>"; };
 		01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxSearchCapsuleView.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				01ABA41426488A8700D468AF /* SearchVC.swift */,
+				01BAB1EB264DD234001D792D /* ItemListCell.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 				0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */,
 				01ABA41526488A8700D468AF /* SearchVC.swift in Sources */,
 				01B2EC24263D6CE100940A47 /* Storage.swift in Sources */,
+				01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */,
 				01D8484426430BD4008A5FA2 /* GeneralSpaceView.swift in Sources */,
 				014518272642E53700596FCC /* ItemView.swift in Sources */,
 				01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */,

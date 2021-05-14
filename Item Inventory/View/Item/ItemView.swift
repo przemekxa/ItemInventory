@@ -10,6 +10,9 @@ import Kingfisher
 
 struct ItemView: View {
 
+    @Environment(\.managedObjectContext)
+    private var managedObjectContext
+
     @Environment(\.storage)
     private var storage
 
@@ -24,16 +27,48 @@ struct ItemView: View {
 
     @State private var isEditing = false
 
-    init(_ item: Item) {
+    let allowsOpeningBoxAndLocation: Bool
+
+    init(_ item: Item, allowsOpeningBoxAndLocation: Bool = false) {
         _item = ObservedObject(initialValue: item)
+        self.allowsOpeningBoxAndLocation = allowsOpeningBoxAndLocation
     }
 
     var body: some View {
         List {
             Section(header: Text("Details")) {
                 HeaderCell(Text("Name")) { Text(item.name ?? "?") }
-                HeaderCell(Text("Location")) { Text(item.box?.location?.name ?? "-") }
-                HeaderCell(Text("Box")) { Text(item.box?.name ?? "-") }
+                HeaderCell(Text("Location")) {
+//                    if allowsOpeningBoxAndLocation {
+//                        if let location = item.box?.location {
+//                            NavigationLink(location.name ?? "-", destination:
+//                                            LocationView(location)
+//                                                .environment(\.managedObjectContext, managedObjectContext)
+//                                                .environment(\.storage, storage)
+//                            )
+//                        } else {
+//                            NavigationLink("General space", destination:
+//                                            GeneralSpaceView()
+//                                                .environment(\.managedObjectContext, managedObjectContext)
+//                                                .environment(\.storage, storage)
+//                            )
+//                        }
+//                    } else {
+//                        Text(item.box?.location?.name ?? "General space")
+//                    }
+                    Text(item.box?.location?.name ?? "General space")
+                }
+                HeaderCell(Text("Box")) {
+                    if allowsOpeningBoxAndLocation, let box = item.box {
+                        NavigationLink(box.name ?? "-", destination:
+                                        BoxView(box)
+                                            .environment(\.managedObjectContext, managedObjectContext)
+                                            .environment(\.storage, storage)
+                        )
+                    } else {
+                        Text(item.box?.name ?? "-")
+                    }
+                }
                 HeaderCell(Text("Comment")) { Text(item.comment ?? "-") }
                 HeaderCell(Text("Keywords")) { Text(item.keywords ?? "-") }
                 if let barcode = item.barcode {

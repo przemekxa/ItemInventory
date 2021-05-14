@@ -44,23 +44,28 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         let searchNavigationController = UINavigationController(rootViewController: searchVC)
         searchNavigationController.navigationBar.prefersLargeTitles = true
 
-        searchNavigationController.tabBarItem = UITabBarItem(title: "Second",
-                                                             image: UIImage(systemName: "map"),
-                                                             selectedImage: UIImage(systemName: "map.fill"))
+        searchNavigationController.tabBarItem = UITabBarItem(title: "Items",
+                                                             image: UIImage(systemName: "magnifyingglass.circle"),
+                                                             selectedImage: UIImage(systemName: "magnifyingglass.circle.fill"))
 
-        // QR View
-//        let qra = QRBarcodeView(objectTypes: [.qr, .ean8, .ean13, .upc]) { result in
-//            print("Result:", result)
-//        }
-        let qrhost = UIHostingController(rootView: BoxSearchView(box: Box()))
 
-        tabBar.setViewControllers([locationsViewHosting, searchNavigationController, qrhost], animated: false)
+        tabBar.setViewControllers([locationsViewHosting, searchNavigationController], animated: false)
+        tabBar.selectedIndex = 1
     }
 
-//    // Future - detect subsequent clicks
-//    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-//        print("Selected", viewController.tabBarItem.title, "previous", tabBarController.selectedViewController?.tabBarItem.title)
-//        return true
-//    }
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        // Focus on search bar if clicked on items again
+        if
+            viewController == tabBarController.selectedViewController,
+            let navigationVC = viewController as? UINavigationController,
+            let searchVC = navigationVC.visibleViewController as? SearchVC,
+            let searchBar = searchVC.navigationItem.searchController?.searchBar,
+            !searchBar.isFirstResponder
+            {
+            searchBar.becomeFirstResponder()
+        }
+
+        return true
+    }
 
 }

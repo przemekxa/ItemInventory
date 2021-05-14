@@ -100,11 +100,10 @@ struct LocationView: View {
                     .cornerRadius(8.0)
 
             } else {
-                Image(systemName: "square.slash")
-                    .imageScale(.large)
-                    .opacity(0.5)
+                Image("slash")
+                    .resizable()
+                    .scaledToFill()
                     .frame(width: 64, height: 64, alignment: .center)
-                    .background(Color(UIColor.secondarySystemBackground))
                     .cornerRadius(8.0)
             }
 

@@ -9,13 +9,14 @@ import SwiftUI
 
 struct HeaderCell<Content: View>: View {
 
-    init(_ header: Text, content: @escaping () -> Content) {
+    init(_ header: Text, @ViewBuilder content: @escaping () -> Content) {
         self.header = header
         self.content = content
     }
 
     var header: Text
 
+    @ViewBuilder
     var content: () -> Content
 
     var body: some View {
