@@ -17,10 +17,12 @@ class Navigation: NSObject, UITabBarControllerDelegate {
     private var scannerNavigation: UINavigationController!
 
     private(set) var storage: Storage
+    private var importExportManager: ImportExportManager
 
     override init() {
         tabBar = UITabBarController()
         storage = .shared
+        importExportManager = ImportExportManager(storage)
         super.init()
 
         tabBar.delegate = self
@@ -73,7 +75,7 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         scannerNavigation.navigationBar.scrollEdgeAppearance = navigationBarAppearance
 
         // Settings
-        let settingsView = SettingsView()
+        let settingsView = SettingsView(manager: importExportManager)
         let settingsViewHosting = UIHostingController(rootView: settingsView)
         settingsViewHosting.tabBarItem = UITabBarItem(title: "Settings",
                                                       image: UIImage(systemName: "gearshape"),

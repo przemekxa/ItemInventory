@@ -11,7 +11,7 @@ import CoreData
 import ZIPFoundation
 import Combine
 
-class ImportExportManager {
+class ImportExportManager: ObservableObject {
 
     enum ExportError: Error {
         case fetchLocations
@@ -44,7 +44,7 @@ class ImportExportManager {
     @Published private(set) var isExporting = false
 
     /// Exported file URL
-    @Published private(set) var exportFileURL: URL?
+    @Published var exportFileURL: URL?
 
     /// Error message during export
     @Published private(set) var exportError: String?
@@ -74,7 +74,7 @@ class ImportExportManager {
     // MARK: - Export
 
     /// Prepare for the export
-    private func prepareExport() throws {
+    func prepareExport() throws {
         do {
             // Remove old export directory
             if fileManager.fileExists(atPath: exportURL.path) {
@@ -193,6 +193,10 @@ class ImportExportManager {
 
     /// Clean up after the export
     func didExport() {
+        logger.debug("Did export, cleaning up")
+        isExporting = false
+        exportError = nil
+        exportFileURL = nil
         queue.async {
             do {
                 // Remove old export directory

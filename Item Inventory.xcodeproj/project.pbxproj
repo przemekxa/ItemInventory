@@ -40,6 +40,8 @@
 		01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */; };
 		01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAB1EB264DD234001D792D /* ItemListCell.swift */; };
 		01BC8117264EE85B006079B1 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BC8116264EE85B006079B1 /* ScannerView.swift */; };
+		01BCC75626505C10007F9CB0 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCC75526505C10007F9CB0 /* ExportView.swift */; };
+		01BCC75826506285007F9CB0 /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BCC75726506285007F9CB0 /* ImportView.swift */; };
 		01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C71434263DB8780028A8C8 /* ImagePicker.swift */; };
 		01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9DE53264161DD006E6C7D /* ItemEditView.swift */; };
 		01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = 01C9DE5626417890006E6C7D /* OrderedCollections */; };
@@ -84,6 +86,8 @@
 		01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRBarcodeViewController.swift; sourceTree = "<group>"; };
 		01BAB1EB264DD234001D792D /* ItemListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListCell.swift; sourceTree = "<group>"; };
 		01BC8116264EE85B006079B1 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
+		01BCC75526505C10007F9CB0 /* ExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportView.swift; sourceTree = "<group>"; };
+		01BCC75726506285007F9CB0 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
 		01C71434263DB8780028A8C8 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		01C9DE53264161DD006E6C7D /* ItemEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemEditView.swift; sourceTree = "<group>"; };
 		01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxSearchCapsuleView.swift; sourceTree = "<group>"; };
@@ -109,6 +113,8 @@
 			isa = PBXGroup;
 			children = (
 				011A596B2650462E00D556D6 /* SettingsView.swift */,
+				01BCC75526505C10007F9CB0 /* ExportView.swift */,
+				01BCC75726506285007F9CB0 /* ImportView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -350,6 +356,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01BCC75626505C10007F9CB0 /* ExportView.swift in Sources */,
 				01D8484626431A6C008A5FA2 /* BoxSearchView.swift in Sources */,
 				01CB751D2643597300273947 /* BoxSearchCapsuleView.swift in Sources */,
 				01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */,
@@ -374,6 +381,7 @@
 				011A596E265048E900D556D6 /* Kingfisher.swift in Sources */,
 				011A596C2650462E00D556D6 /* SettingsView.swift in Sources */,
 				0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */,
+				01BCC75826506285007F9CB0 /* ImportView.swift in Sources */,
 				01ABA41526488A8700D468AF /* SearchVC.swift in Sources */,
 				01B2EC24263D6CE100940A47 /* Storage.swift in Sources */,
 				01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */,

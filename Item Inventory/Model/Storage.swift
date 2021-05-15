@@ -101,6 +101,9 @@ class Storage {
     /// Delete all data from the database and from the 'images' directory
     func deleteAllData() {
         container.performBackgroundTask { context in
+
+            context.automaticallyMergesChangesFromParent = true
+            
             let item = NSBatchDeleteRequest(fetchRequest: Item.fetchRequest())
             let box = NSBatchDeleteRequest(fetchRequest: Box.fetchRequest())
             let location = NSBatchDeleteRequest(fetchRequest: Location.fetchRequest())
@@ -108,6 +111,9 @@ class Storage {
             _ = try? context.execute(item)
             _ = try? context.execute(box)
             _ = try? context.execute(location)
+
+            try? context.save()
+            try? self.context.save()
         }
         imageStore.deleteAllData()
     }
