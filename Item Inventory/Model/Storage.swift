@@ -102,18 +102,28 @@ class Storage {
     func deleteAllData() {
         container.performBackgroundTask { context in
 
-            context.automaticallyMergesChangesFromParent = true
-            
-            let item = NSBatchDeleteRequest(fetchRequest: Item.fetchRequest())
-            let box = NSBatchDeleteRequest(fetchRequest: Box.fetchRequest())
-            let location = NSBatchDeleteRequest(fetchRequest: Location.fetchRequest())
+            let itemFetchRequest: NSFetchRequest = Item.fetchRequest()
+            let boxFetchRequest: NSFetchRequest = Box.fetchRequest()
+            let fetchRequest: NSFetchRequest = Location.fetchRequest()
 
-            _ = try? context.execute(item)
-            _ = try? context.execute(box)
-            _ = try? context.execute(location)
+            do {
+                let items = try context.fetch(itemFetchRequest)
+                for object in items {
+                    context.delete(object)
+                }
+                let boxes = try context.fetch(boxFetchRequest)
+                for object in boxes {
+                    context.delete(object)
+                }
+                let locations = try context.fetch(fetchRequest)
+                for object in locations {
+                    context.delete(object)
+                }
+                try context.save()
 
-            try? context.save()
-            try? self.context.save()
+            } catch {
+                self.logger.error("Cannot delete all data: \(error.localizedDescription)")
+            }
         }
         imageStore.deleteAllData()
     }

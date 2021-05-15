@@ -277,22 +277,13 @@ class ImportExportManager: ObservableObject {
             // Create new identifiers
             updateImageIdentifiers(&items, in: &imageIdentifiers)
 
-            // Batch insert
-            var count = 0
-            let batchInsert = NSBatchInsertRequest(entity: Item.entity()) { (object: NSManagedObject) -> Bool in
-                if count < items.count, let item = object as? Item {
-                    items[count].populate(item: item)
-                    count += 1
-                    return false
-                }
-                return true
+            // Insert
+            for codableItem in items {
+                let item = Item(context: context)
+                codableItem.populate(item: item)
             }
-            batchInsert.resultType = .statusOnly
-            let result = try context.execute(batchInsert) as! NSBatchInsertResult
-
-            guard let boolResult = result.result as? Bool, boolResult else {
-                throw ImportError.generalLocation
-            }
+            
+            try? context.save()
         }
     }
 
