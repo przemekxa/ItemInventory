@@ -92,6 +92,7 @@ struct LocationView: View {
 
             if let imageUUID = box.imageUUID {
                 KFImage(storage.imageStore.imageURL(for: imageUUID))
+                    .setProcessor(DownsamplingImageProcessor.scaled64)
                     .cancelOnDisappear(true)
                     .loadImmediately()
                     .resizable()

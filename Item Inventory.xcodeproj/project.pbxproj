@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		011A5964264FE55C00D556D6 /* ImportExportManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011A5963264FE55C00D556D6 /* ImportExportManager.swift */; };
+		011A5966264FEA6600D556D6 /* CodableModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011A5965264FEA6600D556D6 /* CodableModel.swift */; };
+		011A5969264FF37E00D556D6 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 011A5968264FF37E00D556D6 /* ZIPFoundation */; };
+		011A596C2650462E00D556D6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011A596B2650462E00D556D6 /* SettingsView.swift */; };
+		011A596E265048E900D556D6 /* Kingfisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011A596D265048E900D556D6 /* Kingfisher.swift */; };
 		011DBA72263F4B8700E5713A /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DBA71263F4B8700E5713A /* ImageCache.swift */; };
 		011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011DBA73263F4E6500E5713A /* ImageStore.swift */; };
 		0121CAEC264096D10071E633 /* BoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121CAEB264096D10071E633 /* BoxView.swift */; };
@@ -45,6 +50,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		011A5963264FE55C00D556D6 /* ImportExportManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExportManager.swift; sourceTree = "<group>"; };
+		011A5965264FEA6600D556D6 /* CodableModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableModel.swift; sourceTree = "<group>"; };
+		011A596B2650462E00D556D6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		011A596D265048E900D556D6 /* Kingfisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Kingfisher.swift; sourceTree = "<group>"; };
 		011DBA71263F4B8700E5713A /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		011DBA73263F4E6500E5713A /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
 		0121CAEB264096D10071E633 /* BoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxView.swift; sourceTree = "<group>"; };
@@ -89,12 +98,21 @@
 			files = (
 				01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */,
 				01F1C8A2263E042700DFA8D0 /* Kingfisher in Frameworks */,
+				011A5969264FF37E00D556D6 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		011A596A2650461C00D556D6 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				011A596B2650462E00D556D6 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		0121CAEA264096C10071E633 /* Box */ = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +183,7 @@
 				01B2EC25263D6DE900940A47 /* Logger.swift */,
 				01B2EC30263D7B3900940A47 /* Environment.swift */,
 				0121F0AC263DB04E00CEA168 /* Identifiable.swift */,
+				011A596D265048E900D556D6 /* Kingfisher.swift */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -174,9 +193,11 @@
 			children = (
 				01B2EC10263D689000940A47 /* Item_Inventory.xcdatamodeld */,
 				0121CAED2640AE200071E633 /* CoreData+Extension.swift */,
+				011A5965264FEA6600D556D6 /* CodableModel.swift */,
 				01B2EC23263D6CE100940A47 /* Storage.swift */,
 				011DBA73263F4E6500E5713A /* ImageStore.swift */,
 				011DBA71263F4B8700E5713A /* ImageCache.swift */,
+				011A5963264FE55C00D556D6 /* ImportExportManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -198,6 +219,7 @@
 				01C9DE52264161C7006E6C7D /* Item */,
 				01ABA41326488A7E00D468AF /* Search */,
 				01BC8115264EE827006079B1 /* Scanner */,
+				011A596A2650461C00D556D6 /* Settings */,
 				01B2EC35263D919800940A47 /* EmptyableList.swift */,
 				014518282642E58D00596FCC /* HeaderCell.swift */,
 			);
@@ -267,6 +289,7 @@
 			packageProductDependencies = (
 				01F1C8A1263E042700DFA8D0 /* Kingfisher */,
 				01C9DE5626417890006E6C7D /* OrderedCollections */,
+				011A5968264FF37E00D556D6 /* ZIPFoundation */,
 			);
 			productName = "Item Inventory";
 			productReference = 01B2EC07263D689000940A47 /* Item Inventory.app */;
@@ -298,6 +321,7 @@
 			packageReferences = (
 				01F1C8A0263E042700DFA8D0 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				01C9DE5526417890006E6C7D /* XCRemoteSwiftPackageReference "swift-collections" */,
+				011A5967264FF37E00D556D6 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 01B2EC08263D689000940A47 /* Products */;
 			projectDirPath = "";
@@ -334,6 +358,7 @@
 				011DBA72263F4B8700E5713A /* ImageCache.swift in Sources */,
 				01B2EC26263D6DE900940A47 /* Logger.swift in Sources */,
 				01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */,
+				011A5966264FEA6600D556D6 /* CodableModel.swift in Sources */,
 				01B2EC29263D706E00940A47 /* Navigation.swift in Sources */,
 				01B2EC0D263D689000940A47 /* SceneDelegate.swift in Sources */,
 				011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */,
@@ -346,6 +371,8 @@
 				01B2EC2D263D73D800940A47 /* LocationsView.swift in Sources */,
 				01B2EC12263D689000940A47 /* Item_Inventory.xcdatamodeld in Sources */,
 				01B2EC36263D919800940A47 /* EmptyableList.swift in Sources */,
+				011A596E265048E900D556D6 /* Kingfisher.swift in Sources */,
+				011A596C2650462E00D556D6 /* SettingsView.swift in Sources */,
 				0121CAEE2640AE200071E633 /* CoreData+Extension.swift in Sources */,
 				01ABA41526488A8700D468AF /* SearchVC.swift in Sources */,
 				01B2EC24263D6CE100940A47 /* Storage.swift in Sources */,
@@ -354,6 +381,7 @@
 				014518272642E53700596FCC /* ItemView.swift in Sources */,
 				01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */,
 				0121CAEC264096D10071E633 /* BoxView.swift in Sources */,
+				011A5964264FE55C00D556D6 /* ImportExportManager.swift in Sources */,
 				0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */,
 				01B2EC31263D7B3900940A47 /* Environment.swift in Sources */,
 			);
@@ -555,6 +583,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		011A5967264FF37E00D556D6 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.12;
+			};
+		};
 		01C9DE5526417890006E6C7D /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections";
@@ -574,6 +610,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		011A5968264FF37E00D556D6 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 011A5967264FF37E00D556D6 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
 		01C9DE5626417890006E6C7D /* OrderedCollections */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 01C9DE5526417890006E6C7D /* XCRemoteSwiftPackageReference "swift-collections" */;

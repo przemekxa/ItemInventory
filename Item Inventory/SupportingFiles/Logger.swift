@@ -14,5 +14,6 @@ extension Logger {
 
     static let storage = Logger(subsystem: subsystem, category: "coreData")
     static let imageStore = Logger(subsystem: subsystem, category: "imageStorage")
+    static let importExport = Logger(subsystem: subsystem, category: "importExport")
 
 }

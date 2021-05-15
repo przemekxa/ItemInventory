@@ -153,6 +153,7 @@ struct BoxView: View {
 
             if let imageIdentifier = item.imageIdentifiers.first {
                 KFImage(storage.imageStore.imageURL(for: imageIdentifier))
+                    .setProcessor(DownsamplingImageProcessor.scaled64)
                     .cancelOnDisappear(true)
                     .loadImmediately()
                     .resizable()

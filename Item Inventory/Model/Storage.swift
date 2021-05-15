@@ -98,6 +98,26 @@ class Storage {
         }
     }
 
+    /// Delete all data from the database and from the 'images' directory
+    func deleteAllData() {
+        container.performBackgroundTask { context in
+            let item = NSBatchDeleteRequest(fetchRequest: Item.fetchRequest())
+            let box = NSBatchDeleteRequest(fetchRequest: Box.fetchRequest())
+            let location = NSBatchDeleteRequest(fetchRequest: Location.fetchRequest())
+
+            _ = try? context.execute(item)
+            _ = try? context.execute(box)
+            _ = try? context.execute(location)
+        }
+        imageStore.deleteAllData()
+    }
+
+
+    /// Create a new background object context
+    func newBackgroundContext() -> NSManagedObjectContext {
+        container.newBackgroundContext()
+    }
+
 //    func edit<Object: NSManagedObject>(_ object: Object, _ block: (Object) -> ()) {
 //        context.performAndWait {
 //            block(object)

@@ -13,47 +13,84 @@ class ImageStore {
 
     typealias Identifier = String
 
-    private let url: URL
+    let url: URL
 
-    private let queue: DispatchQueue
-
+    private let queue = DispatchQueue(label: "com.przambrozy.iteminventory.imagestorage.queue", qos: .userInitiated)
+    private let fileManager = FileManager.default
     private let logger = Logger.imageStore
 
 
     init() {
 
-        // Create a background queue
-        queue = DispatchQueue(label: "com.przambrozy.iteminventory.imagestorage.queue", qos: .userInitiated)
-
         // Create images URL
-        url = FileManager.default
+        url = fileManager
             .urls(for: .documentDirectory, in: .userDomainMask).first!
             .appendingPathComponent("images", isDirectory: true)
 
-        // Create images path (if necessary)
-        if !FileManager.default.fileExists(atPath: url.path) {
-            do {
-                try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
-            } catch {
-                logger.error("Cannot create directory")
-            }
-        }
+        // Create images directory (if necessary)
+        assureImagesDirectory()
 
-        if let contents = try? FileManager.default.contentsOfDirectory(atPath: url.path) {
+        if let contents = try? fileManager.contentsOfDirectory(atPath: url.path) {
             print("Contents: ", contents)
         }
     }
 
+
+    /// Create 'images' folder if necessary
+    private func assureImagesDirectory() {
+        if !fileManager.fileExists(atPath: url.path) {
+            do {
+                try fileManager.createDirectory(at: url, withIntermediateDirectories: true)
+            } catch {
+                logger.error("Cannot create 'images' directory: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
+    /// Delete all the photos
+    func deleteAllData() {
+        queue.async {
+            do {
+                try self.fileManager.removeItem(at: self.url)
+                self.assureImagesDirectory()
+            } catch {
+                self.logger.error("Cannot delete 'images' directory: \(error.localizedDescription)")
+            }
+        }
+    }
+
     /// Generate a new, unique identifier
-    private func uniqueIdentifier() -> Identifier {
+    func uniqueIdentifier() -> Identifier {
         var identifier: Identifier
         var path: URL
         repeat {
             identifier = UUID().uuidString
             path = imageURL(for: identifier)
-        } while FileManager.default.fileExists(atPath: path.path)
+        } while fileManager.fileExists(atPath: path.path)
 
         return identifier
+    }
+
+
+    /// Generate multiple unique identifiers
+    /// - Parameter count: Number of identifiers to generate
+    func uniqueIdentifiers(count: Int) -> [Identifier] {
+        var identifiers = [Identifier]()
+        identifiers.reserveCapacity(count)
+
+        var identifier: Identifier
+        var url: URL
+
+        while identifiers.count < count {
+            identifier = UUID().uuidString
+            url = imageURL(for: identifier)
+            if !fileManager.fileExists(atPath: url.path) {
+                identifiers.append(identifier)
+            }
+        }
+
+        return identifiers
     }
 
     func imageURL(for identifier: Identifier) -> URL {
@@ -63,7 +100,7 @@ class ImageStore {
     /// Return all files saved on disk
     func savedIdentifiers() -> Set<Identifier> {
         do {
-            let contents = try FileManager.default.contentsOfDirectory(atPath: url.path)
+            let contents = try fileManager.contentsOfDirectory(atPath: url.path)
                 .filter { $0.hasSuffix(".jpg") }
                 .map { String($0.dropLast(4)) }
             return Set(contents)
@@ -102,7 +139,7 @@ class ImageStore {
             self.queue.async {
                 let filepath = self.imageURL(for: identifier)
                 do {
-                    try FileManager.default.removeItem(at: filepath)
+                    try self.fileManager.removeItem(at: filepath)
                 } catch {
                     self.logger.error("Cannot delete file")
                 }
@@ -122,7 +159,7 @@ class ImageStore {
                 }
                 do {
                     for filepath in filepaths {
-                        try FileManager.default.removeItem(at: filepath)
+                        try self.fileManager.removeItem(at: filepath)
                     }
                 } catch {
                     self.logger.error("Cannot delete file")

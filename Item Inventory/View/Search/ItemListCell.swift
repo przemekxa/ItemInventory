@@ -101,7 +101,7 @@ class ItemContentView: UIView, UIContentView {
         currentConfiguration = configuration
 
         // Set image
-        imageView.kf.setImage(with: configuration.imageURL, placeholder: UIImage(named: "slash"))
+        imageView.kf.setImage(with: configuration.imageURL, placeholder: UIImage(named: "slash"), options: [.processor(DownsamplingImageProcessor.scaled64)])
         // Set name
         nameLabel.text = configuration.name
         // Set location

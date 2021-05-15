@@ -72,9 +72,16 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         navigationBarAppearance.configureWithDefaultBackground()
         scannerNavigation.navigationBar.scrollEdgeAppearance = navigationBarAppearance
 
+        // Settings
+        let settingsView = SettingsView()
+        let settingsViewHosting = UIHostingController(rootView: settingsView)
+        settingsViewHosting.tabBarItem = UITabBarItem(title: "Settings",
+                                                      image: UIImage(systemName: "gearshape"),
+                                                      selectedImage: UIImage(systemName: "gearshape.fill"))
 
-        tabBar.setViewControllers([locationsViewHosting, searchNavigation, scannerNavigation], animated: false)
-        tabBar.selectedIndex = 2
+
+        tabBar.setViewControllers([locationsViewHosting, searchNavigation, scannerNavigation, settingsViewHosting], animated: false)
+        tabBar.selectedIndex = 0
     }
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
