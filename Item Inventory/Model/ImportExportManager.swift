@@ -383,6 +383,14 @@ class ImportExportManager: ObservableObject {
                 // Delete temporary 'import' directory
                 try self.fileManager.removeItem(at: self.importURL)
 
+                // Update last box id
+                let boxFetchRequest: NSFetchRequest = Box.fetchRequest()
+                boxFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Box.code, ascending: false)]
+                boxFetchRequest.fetchLimit = 1
+                if let maxCodeBox = (try backgroundContext.fetch(boxFetchRequest)).first {
+                    self.storage.lastBoxID = Int(maxCodeBox.code)
+                }
+
                 DispatchQueue.main.async {
                     self.isImporting = false
                     self.importError = nil
