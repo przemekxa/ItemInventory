@@ -76,6 +76,8 @@ class Navigation: NSObject, UITabBarControllerDelegate {
 
         // Settings
         let settingsView = SettingsView(manager: importExportManager)
+            .environment(\.managedObjectContext, storage.context)
+            .environment(\.storage, storage)
         let settingsViewHosting = UIHostingController(rootView: settingsView)
         settingsViewHosting.tabBarItem = UITabBarItem(title: "Settings",
                                                       image: UIImage(systemName: "gearshape"),

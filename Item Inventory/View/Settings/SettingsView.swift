@@ -98,7 +98,7 @@ struct SettingsView: View {
 
                 }
                 Section(header: Text("QR codes"), footer: Text("Generate and print QR codes to put them on a box")) {
-                    NavigationLink(destination: Text("Destination")) {
+                    NavigationLink(destination: QRSettingsView()) {
                         Label("Generate QR codes", systemImage: "doc")
                     }
                 }

@@ -20,6 +20,8 @@
 		0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121F0AC263DB04E00CEA168 /* Identifiable.swift */; };
 		014518272642E53700596FCC /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518262642E53700596FCC /* ItemView.swift */; };
 		014518292642E58D00596FCC /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518282642E58D00596FCC /* HeaderCell.swift */; };
+		019CE13A26515D7F00C9B817 /* QRSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019CE13926515D7F00C9B817 /* QRSettingsView.swift */; };
+		019CE13C2651635E00C9B817 /* QRGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019CE13B2651635E00C9B817 /* QRGenerator.swift */; };
 		01ABA41526488A8700D468AF /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA41426488A8700D468AF /* SearchVC.swift */; };
 		01B2EC0B263D689000940A47 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC0A263D689000940A47 /* AppDelegate.swift */; };
 		01B2EC0D263D689000940A47 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC0C263D689000940A47 /* SceneDelegate.swift */; };
@@ -64,6 +66,8 @@
 		0121F0AC263DB04E00CEA168 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		014518262642E53700596FCC /* ItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemView.swift; sourceTree = "<group>"; };
 		014518282642E58D00596FCC /* HeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCell.swift; sourceTree = "<group>"; };
+		019CE13926515D7F00C9B817 /* QRSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRSettingsView.swift; sourceTree = "<group>"; };
+		019CE13B2651635E00C9B817 /* QRGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRGenerator.swift; sourceTree = "<group>"; };
 		01ABA41426488A8700D468AF /* SearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
 		01B2EC07263D689000940A47 /* Item Inventory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Item Inventory.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B2EC0A263D689000940A47 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 				011A596B2650462E00D556D6 /* SettingsView.swift */,
 				01BCC75526505C10007F9CB0 /* ExportView.swift */,
 				01BCC75726506285007F9CB0 /* ImportView.swift */,
+				019CE13926515D7F00C9B817 /* QRSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -204,6 +209,7 @@
 				011DBA73263F4E6500E5713A /* ImageStore.swift */,
 				011DBA71263F4B8700E5713A /* ImageCache.swift */,
 				011A5963264FE55C00D556D6 /* ImportExportManager.swift */,
+				019CE13B2651635E00C9B817 /* QRGenerator.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -366,6 +372,7 @@
 				01B2EC26263D6DE900940A47 /* Logger.swift in Sources */,
 				01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */,
 				011A5966264FEA6600D556D6 /* CodableModel.swift in Sources */,
+				019CE13A26515D7F00C9B817 /* QRSettingsView.swift in Sources */,
 				01B2EC29263D706E00940A47 /* Navigation.swift in Sources */,
 				01B2EC0D263D689000940A47 /* SceneDelegate.swift in Sources */,
 				011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */,
@@ -389,6 +396,7 @@
 				014518272642E53700596FCC /* ItemView.swift in Sources */,
 				01C71435263DB8780028A8C8 /* ImagePicker.swift in Sources */,
 				0121CAEC264096D10071E633 /* BoxView.swift in Sources */,
+				019CE13C2651635E00C9B817 /* QRGenerator.swift in Sources */,
 				011A5964264FE55C00D556D6 /* ImportExportManager.swift in Sources */,
 				0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */,
 				01B2EC31263D7B3900940A47 /* Environment.swift in Sources */,
