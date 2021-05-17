@@ -58,10 +58,16 @@ struct QRSettingsView: View {
         .listStyle(InsetGroupedListStyle())
         .navigationTitle("Generate QR codes")
         .toolbar {
-            Button("Generate") {
-                generate()
+            ToolbarItem {
+                if generator.isGenerating {
+                    ProgressView()
+                } else {
+                    Button("Generate") {
+                        generate()
+                    }
+                    .disabled(futureCount == 0 && selectedBoxes.isEmpty)
+                }
             }
-            .disabled(futureCount == 0 && selectedBoxes.isEmpty)
         }
         .sheet(item: $generator.url) { url in
             ExportView(fileURL: url) {
@@ -73,15 +79,16 @@ struct QRSettingsView: View {
     private func generate() {
         let lastID = max(storage.lastBoxID, Int(selectedBoxes.map { $0.code }.max() ?? 0))
 
-        let currentCodes = selectedBoxes.map {
+        var codes = selectedBoxes.map {
             QRGenerator.Box(code: $0.qrCode, name: $0.name, location: $0.location?.name)
         }
 
-        let futureCodes = Array((lastID + 1)...(lastID + futureCount)).map {
-            QRGenerator.Box(code: "S-" + String(format: "%08d", $0), name: nil, location: nil)
+        if futureCount > 0 {
+            codes += Array((lastID + 1)...(lastID + futureCount)).map {
+                QRGenerator.Box(code: "S-" + String(format: "%08d", $0), name: nil, location: nil)
+            }
         }
 
-        let codes = currentCodes + futureCodes
         generator.generate(codes)
     }
 }
