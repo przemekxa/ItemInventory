@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EditBoxView: View {
+struct BoxEditView: View {
 
     @Environment(\.storage)
     private var storage
@@ -37,7 +37,8 @@ struct EditBoxView: View {
 
     @State private var isScanning = false
 
-    @State private var pickingImage: UIImagePickerController.SourceType?
+    @State private var isPickingImage = false
+    @State private var isTakingPicture = false
 
     @State private var errorMessage: String?
 
@@ -145,8 +146,12 @@ struct EditBoxView: View {
             .sheet(isPresented: $isScanning) {
                 QRBarcodeView(objectTypes: [.qr], handler: handleScan(result:))
             }
-            .sheet(item: $pickingImage) { method in
-                ImagePicker(image: $image, sourceType: method)
+            .fullScreenCover(isPresented: $isTakingPicture) {
+                ImagePicker(image: $image, sourceType: .camera)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            .sheet(isPresented: $isPickingImage) {
+                ImagePicker(image: $image, sourceType: .photoLibrary)
             }
             .alert(item: $errorMessage) { message in
                 Alert(title: Text("Error"),
@@ -188,12 +193,12 @@ struct EditBoxView: View {
     private func imageButton(_ title: String) -> some View {
         Menu {
             Button {
-                pickingImage = .camera
+                isTakingPicture = true
             } label: {
                 Label("Camera", systemImage: "camera")
             }
             Button {
-                pickingImage = .photoLibrary
+                isPickingImage = true
             } label: {
                 Label("Photo library", systemImage: "photo")
             }
@@ -261,10 +266,10 @@ struct EditBoxView: View {
 
 }
 
-struct EditBoxView_Previews: PreviewProvider {
+struct BoxEditView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            EditBoxView(Storage.shared, location: Location())
+            BoxEditView(Storage.shared, location: Location())
         }
     }
 }

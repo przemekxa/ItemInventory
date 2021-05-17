@@ -32,10 +32,17 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     var objectTypes: [AVMetadataObject.ObjectType] = [.qr]
     weak var delegate: QRViewControllerDelegate?
 
+    private var didSetup = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .black
+
+        // If we have authorization - start now
+        if case .authorized = AVCaptureDevice.authorizationStatus(for: .video) {
+            setup()
+        }
 
     }
 
@@ -96,45 +103,59 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 
     private func setup() {
 
-        let session = AVCaptureSession()
-        self.session = session
+        if didSetup { return }
+        didSetup = true
 
-        // Video input
+        DispatchQueue.global(qos: .userInitiated).async {
 
-        guard
-            let device = AVCaptureDevice.default(for: .video),
-            let videoInput = try? AVCaptureDeviceInput(device: device)
-        else { return }
+            let session = AVCaptureSession()
+            self.session = session
 
-        if session.canAddInput(videoInput) {
-            session.addInput(videoInput)
-        } else {
-            errorAlert("Cannot scan code")
-            return
+            // Video input
+
+            guard
+                let device = AVCaptureDevice.default(for: .video),
+                let videoInput = try? AVCaptureDeviceInput(device: device)
+            else { return }
+
+            if session.canAddInput(videoInput) {
+                session.addInput(videoInput)
+            } else {
+                DispatchQueue.main.async {
+                    self.errorAlert("Cannot scan code")
+                }
+                return
+            }
+
+            // Metadata output
+
+            let metadataOutput = AVCaptureMetadataOutput()
+
+            if session.canAddOutput(metadataOutput) {
+                session.addOutput(metadataOutput)
+                metadataOutput.setMetadataObjectsDelegate(self, queue: .main)
+                metadataOutput.metadataObjectTypes = self.objectTypes
+            } else {
+                DispatchQueue.main.async {
+                    self.errorAlert("Cannot scan code")
+                }
+                return
+            }
+
+            session.commitConfiguration()
+            session.startRunning()
+
+            // Preview
+            DispatchQueue.main.async {
+                self.preview = AVCaptureVideoPreviewLayer(session: session)
+                self.preview?.frame = self.view.layer.bounds
+                self.preview?.videoGravity = .resizeAspectFill
+                self.view.layer.addSublayer(self.preview!)
+            }
+
+
         }
 
-        // Metadata output
-
-        let metadataOutput = AVCaptureMetadataOutput()
-
-        if session.canAddOutput(metadataOutput) {
-            session.addOutput(metadataOutput)
-            metadataOutput.setMetadataObjectsDelegate(self, queue: .main)
-            metadataOutput.metadataObjectTypes = objectTypes
-        } else {
-            errorAlert("Cannot scan code")
-            return
-        }
-
-        // Preview
-
-        preview = AVCaptureVideoPreviewLayer(session: session)
-        preview?.frame = view.layer.bounds
-        preview?.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(preview!)
-
-        session.commitConfiguration()
-        session.startRunning()
     }
 
     private func errorAlert(_ text: String) {

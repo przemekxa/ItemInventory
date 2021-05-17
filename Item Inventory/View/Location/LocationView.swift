@@ -78,10 +78,10 @@ struct LocationView: View {
             }
         }
         .sheet(isPresented: $addBoxSheet) {
-            EditBoxView(storage, location: location)
+            BoxEditView(storage, location: location)
         }
         .sheet(item: $editBoxSheet) { box in
-            EditBoxView(storage, box: box)
+            BoxEditView(storage, box: box)
         }
         .actionSheet(item: $deleteBoxSheet, content: deleteBoxActionSheet(_:))
     }

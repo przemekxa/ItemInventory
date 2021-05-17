@@ -123,7 +123,7 @@ struct BoxView: View {
             ItemEditView(storage, item: item)
         }
         .sheet(isPresented: $isEditing) {
-            EditBoxView(storage, box: box)
+            BoxEditView(storage, box: box)
         }
         .actionSheet(isPresented: $showDeleteSheet) {
             deleteActionSheet()

@@ -41,7 +41,8 @@ struct ItemEditView: View {
 
     @State private var isScanning = false
 
-    @State private var pickingImage: UIImagePickerController.SourceType?
+    @State private var isPickingImage = false
+    @State private var isTakingPicture = false
 
     @State private var isCancelling = false
     @State private var isSaving = false
@@ -191,8 +192,12 @@ struct ItemEditView: View {
             .sheet(isPresented: $isScanning) {
                 QRBarcodeView(objectTypes: [.ean8, .ean13, .upc], handler: handleScan(result:))
             }
-            .sheet(item: $pickingImage) { method in
-                ImagePicker(image: $scannedImage, sourceType: method)
+            .fullScreenCover(isPresented: $isTakingPicture) {
+                ImagePicker(image: $scannedImage, sourceType: .camera)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            .sheet(isPresented: $isPickingImage) {
+                ImagePicker(image: $scannedImage, sourceType: .photoLibrary)
             }
             // Process an image change
             .onChange(of: scannedImage) { newImage in
@@ -226,12 +231,12 @@ struct ItemEditView: View {
     private func imageButton() -> some View {
         Menu {
             Button {
-                pickingImage = .camera
+                isTakingPicture = true
             } label: {
                 Label("Camera", systemImage: "camera")
             }
             Button {
-                pickingImage = .photoLibrary
+                isPickingImage = true
             } label: {
                 Label("Photo library", systemImage: "photo")
             }

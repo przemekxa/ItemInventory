@@ -39,7 +39,7 @@
 		01B2EC31263D7B3900940A47 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC30263D7B3900940A47 /* Environment.swift */; };
 		01B2EC34263D89E600940A47 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC33263D89E600940A47 /* LocationView.swift */; };
 		01B2EC36263D919800940A47 /* EmptyableList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC35263D919800940A47 /* EmptyableList.swift */; };
-		01B2EC38263D94AB00940A47 /* EditBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC37263D94AB00940A47 /* EditBoxView.swift */; };
+		01B2EC38263D94AB00940A47 /* BoxEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC37263D94AB00940A47 /* BoxEditView.swift */; };
 		01B2EC3B263D98F600940A47 /* QRBarcodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */; };
 		01BAB1EC264DD234001D792D /* ItemListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BAB1EB264DD234001D792D /* ItemListCell.swift */; };
 		01BC8117264EE85B006079B1 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BC8116264EE85B006079B1 /* ScannerView.swift */; };
@@ -87,7 +87,7 @@
 		01B2EC30263D7B3900940A47 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		01B2EC33263D89E600940A47 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		01B2EC35263D919800940A47 /* EmptyableList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyableList.swift; sourceTree = "<group>"; };
-		01B2EC37263D94AB00940A47 /* EditBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBoxView.swift; sourceTree = "<group>"; };
+		01B2EC37263D94AB00940A47 /* BoxEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxEditView.swift; sourceTree = "<group>"; };
 		01B2EC3A263D98F600940A47 /* QRBarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRBarcodeViewController.swift; sourceTree = "<group>"; };
 		01BAB1EB264DD234001D792D /* ItemListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListCell.swift; sourceTree = "<group>"; };
 		01BC8116264EE85B006079B1 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
@@ -132,6 +132,7 @@
 				0121CAEB264096D10071E633 /* BoxView.swift */,
 				0121CAEF2640AF490071E633 /* BoxHeaderView.swift */,
 				01D8484326430BD4008A5FA2 /* GeneralSpaceView.swift */,
+				01B2EC37263D94AB00940A47 /* BoxEditView.swift */,
 				01D8484526431A6C008A5FA2 /* BoxSearchView.swift */,
 				01CB751C2643597300273947 /* BoxSearchCapsuleView.swift */,
 			);
@@ -253,7 +254,6 @@
 			isa = PBXGroup;
 			children = (
 				01B2EC33263D89E600940A47 /* LocationView.swift */,
-				01B2EC37263D94AB00940A47 /* EditBoxView.swift */,
 			);
 			path = Location;
 			sourceTree = "<group>";
@@ -278,8 +278,8 @@
 		01C9DE52264161C7006E6C7D /* Item */ = {
 			isa = PBXGroup;
 			children = (
-				01C9DE53264161DD006E6C7D /* ItemEditView.swift */,
 				014518262642E53700596FCC /* ItemView.swift */,
+				01C9DE53264161DD006E6C7D /* ItemEditView.swift */,
 			);
 			path = Item;
 			sourceTree = "<group>";
@@ -382,7 +382,7 @@
 				011DBA74263F4E6500E5713A /* ImageStore.swift in Sources */,
 				0121CAF02640AF490071E633 /* BoxHeaderView.swift in Sources */,
 				01B2EC0F263D689000940A47 /* ContentView.swift in Sources */,
-				01B2EC38263D94AB00940A47 /* EditBoxView.swift in Sources */,
+				01B2EC38263D94AB00940A47 /* BoxEditView.swift in Sources */,
 				014518292642E58D00596FCC /* HeaderCell.swift in Sources */,
 				01C9DE54264161DD006E6C7D /* ItemEditView.swift in Sources */,
 				01B2EC34263D89E600940A47 /* LocationView.swift in Sources */,
