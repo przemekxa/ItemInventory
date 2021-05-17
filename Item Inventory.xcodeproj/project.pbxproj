@@ -20,6 +20,7 @@
 		0121F0AD263DB04E00CEA168 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0121F0AC263DB04E00CEA168 /* Identifiable.swift */; };
 		014518272642E53700596FCC /* ItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518262642E53700596FCC /* ItemView.swift */; };
 		014518292642E58D00596FCC /* HeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014518282642E58D00596FCC /* HeaderCell.swift */; };
+		015193ED26519918000DD0B9 /* QRCodeGenerator in Frameworks */ = {isa = PBXBuildFile; productRef = 015193EC26519918000DD0B9 /* QRCodeGenerator */; };
 		019CE13A26515D7F00C9B817 /* QRSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019CE13926515D7F00C9B817 /* QRSettingsView.swift */; };
 		019CE13C2651635E00C9B817 /* QRGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019CE13B2651635E00C9B817 /* QRGenerator.swift */; };
 		01ABA41526488A8700D468AF /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA41426488A8700D468AF /* SearchVC.swift */; };
@@ -104,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				015193ED26519918000DD0B9 /* QRCodeGenerator in Frameworks */,
 				01C9DE5726417890006E6C7D /* OrderedCollections in Frameworks */,
 				01F1C8A2263E042700DFA8D0 /* Kingfisher in Frameworks */,
 				011A5969264FF37E00D556D6 /* ZIPFoundation in Frameworks */,
@@ -302,6 +304,7 @@
 				01F1C8A1263E042700DFA8D0 /* Kingfisher */,
 				01C9DE5626417890006E6C7D /* OrderedCollections */,
 				011A5968264FF37E00D556D6 /* ZIPFoundation */,
+				015193EC26519918000DD0B9 /* QRCodeGenerator */,
 			);
 			productName = "Item Inventory";
 			productReference = 01B2EC07263D689000940A47 /* Item Inventory.app */;
@@ -334,6 +337,7 @@
 				01F1C8A0263E042700DFA8D0 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				01C9DE5526417890006E6C7D /* XCRemoteSwiftPackageReference "swift-collections" */,
 				011A5967264FF37E00D556D6 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				015193EB26519918000DD0B9 /* XCRemoteSwiftPackageReference "swift-qrcode-generator" */,
 			);
 			productRefGroup = 01B2EC08263D689000940A47 /* Products */;
 			projectDirPath = "";
@@ -607,6 +611,14 @@
 				minimumVersion = 0.9.12;
 			};
 		};
+		015193EB26519918000DD0B9 /* XCRemoteSwiftPackageReference "swift-qrcode-generator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fwcd/swift-qrcode-generator.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		01C9DE5526417890006E6C7D /* XCRemoteSwiftPackageReference "swift-collections" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-collections";
@@ -630,6 +642,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 011A5967264FF37E00D556D6 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		015193EC26519918000DD0B9 /* QRCodeGenerator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 015193EB26519918000DD0B9 /* XCRemoteSwiftPackageReference "swift-qrcode-generator" */;
+			productName = QRCodeGenerator;
 		};
 		01C9DE5626417890006E6C7D /* OrderedCollections */ = {
 			isa = XCSwiftPackageProductDependency;
