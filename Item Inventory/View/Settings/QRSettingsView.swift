@@ -20,12 +20,15 @@ struct QRSettingsView: View {
 
     @State private var selectedBoxes = Set<Box>()
 
+    @ObservedObject
+    private var generator = QRGenerator()
+
     var body: some View {
         List {
             Section(header: Text("Codes for future boxes")) {
                 Stepper("Future codes: \(futureCount)",
                         value: $futureCount,
-                        in: 0...24)
+                        in: 0...120)
             }
             Section(header: Text("Existing boxes")) {
                 ForEach(boxes) { box in
@@ -60,21 +63,26 @@ struct QRSettingsView: View {
             }
             .disabled(futureCount == 0 && selectedBoxes.isEmpty)
         }
+        .sheet(item: $generator.url) { url in
+            ExportView(fileURL: url) {
+                generator.delete()
+            }
+        }
     }
 
     private func generate() {
-        let lastID = max(storage.lastBoxID, Int(selectedBoxes.map { $0.code }.max()!))
+        let lastID = max(storage.lastBoxID, Int(selectedBoxes.map { $0.code }.max() ?? 0))
 
         let currentCodes = selectedBoxes.map {
-            QRGenerator.Model(code: $0.qrCode, box: $0.name, location: $0.location?.name)
+            QRGenerator.Box(code: $0.qrCode, name: $0.name, location: $0.location?.name)
         }
 
         let futureCodes = Array((lastID + 1)...(lastID + futureCount)).map {
-            QRGenerator.Model(code: "S-" + String(format: "%08d", $0), box: nil, location: nil)
+            QRGenerator.Box(code: "S-" + String(format: "%08d", $0), name: nil, location: nil)
         }
 
         let codes = currentCodes + futureCodes
-        print("CODES:", codes)
+        generator.generate(codes)
     }
 }
 

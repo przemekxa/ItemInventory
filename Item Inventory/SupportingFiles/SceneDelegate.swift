@@ -17,12 +17,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
+        // Setup the shortcut items
+        setupShortcutItems()
+
         navigation = Navigation()
+
+        // Handle the shortcut items
+        handleShortcutItem(connectionOptions.shortcutItem)
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
         self.window = UIWindow(windowScene: windowScene)
         self.window?.rootViewController = navigation?.tabBar
         self.window?.makeKeyAndVisible()
+
+
 
     }
 
@@ -57,6 +65,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         /// TODO: Save context
     }
 
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        if let index = Int(shortcutItem.type), index >= 0 && index <= 2 {
+            navigation?.tabBar.selectedIndex = index
+        }
+    }
+
+    // MARK: - Shortcut actions
+
+    /// Setup the shortcut items
+    private func setupShortcutItems() {
+        UIApplication.shared.shortcutItems = [
+            UIApplicationShortcutItem(type: "0",
+                                      localizedTitle: "Locations",
+                                      localizedSubtitle: nil,
+                                      icon: UIApplicationShortcutIcon(systemImageName: "map")),
+            UIApplicationShortcutItem(type: "1",
+                                      localizedTitle: "Items",
+                                      localizedSubtitle: nil,
+                                      icon: UIApplicationShortcutIcon(systemImageName: "magnifyingglass.circle")),
+            UIApplicationShortcutItem(type: "2",
+                                      localizedTitle: "Scanner",
+                                      localizedSubtitle: nil,
+                                      icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder")),
+        ]
+    }
+
+    /// Handle the shortcut action
+    private func handleShortcutItem(_ item: UIApplicationShortcutItem?) {
+        if let item = item, let index = Int(item.type), index >= 0 && index <= 2 {
+            navigation?.tabBar.selectedIndex = index
+        }
+    }
 
 }
 

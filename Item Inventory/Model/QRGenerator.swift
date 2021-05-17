@@ -10,7 +10,7 @@ import OSLog
 import QRCodeGenerator
 import UIKit
 
-class QRGenerator {
+class QRGenerator: ObservableObject {
 
     private static let HTML_BEGIN = """
     <!doctype html><html><head><meta charset="utf-8" /><style>
@@ -23,19 +23,23 @@ class QRGenerator {
     .item>.loc{font-size:small}.item>.img{min-width:0;min-height:0;margin:8px}
     .item>.img>svg{display:block;width:100%;height:100%}
     .item>.code{font-family:ui-monospace,monospace;font-size:small}
-    </style></head><body>
+    </style></head><body><div class="page">
     """
 
-    private static let HTML_END = "</body></html>"
+    private static let HTML_END = "</div></body></html>"
 
-    struct Model {
+    struct Box {
         var code: String
-        var box: String?
+        var name: String?
         var location: String?
     }
 
     private let logger = Logger.qrGenerator
     private let queue = DispatchQueue(label: "com.przambrozy.iteminventory.qrgenerator.queue", qos: .userInitiated)
+
+    // State
+    @Published var isGenerating: Bool = false
+    @Published var url: URL?
 
     /// Generate SVG for a given code
     /// - Note: The returned string starts with `<svg` and ends with `</svg>`
@@ -53,9 +57,8 @@ class QRGenerator {
     }
 
     /// Create a div for a single box
-    private func boxToDiv(_ box: Model) -> String {
-        var html = #"<div class="item"><p>"#
-        html += box.box ?? "&nbsp;"
+    private func boxToDiv(_ box: Box) -> String {
+        var html = #"<div class="item"><p>"# + (box.name ?? "&nbsp;")
         if let location = box.location {
             html += "</p><span class=\"loc\">Location: \(location)"
         } else {
@@ -69,71 +72,17 @@ class QRGenerator {
         return html
     }
 
-    /// Create a page for up to 12 boxes
-    private func boxesToPage(_ boxes: [Model], isLast: Bool = true) -> String {
-        //let style = isLast ? "" : #"style="page-break-after: always;""#
-        var html = #"<div class="page"><div class="break"></div>"#
-        for box in boxes {
-            html += boxToDiv(box)
-        }
-        html += "</div>"
-        return html
-    }
-
-    private func createHTML(_ boxes: [Model]) -> String {
-        let pageBoxes = boxes.chunked(into: 12)
-
-        var html = Self.HTML_BEGIN
-        for (index, page) in pageBoxes.enumerated() {
-            html += boxesToPage(page, isLast: index == pageBoxes.endIndex - 1)
-        }
-        html += Self.HTML_END
-        return html
-    }
-
-    private func toPDF(_ html: String) {
-        print("PRINTING HTML\n", html)
-        let formatter = UIMarkupTextPrintFormatter(markupText: html)
-
-        let renderer = UIPrintPageRenderer()
-        renderer.addPrintFormatter(formatter, startingAtPageAt: 0)
-
-
-        // A4 page
-        let page = CGRect(x: 0, y: 0, width: 595.2, height: 841.8)
-        renderer.setValue(page, forKey: "paperRect")
-        renderer.setValue(page, forKey: "printableRect")
-
-
-        let pdfData = NSMutableData()
-
-        UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
-
-
-        for i in 0..<renderer.numberOfPages {
-            UIGraphicsBeginPDFPage()
-            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
-        }
-
-        UIGraphicsEndPDFContext()
-
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            .appendingPathComponent("printable.pdf")
-        try? pdfData.write(to: url, options: [])
-
-        print("URL: ", url)
-
-    }
-
-    private func createHTML2(_ boxes: [Model]) -> [String] {
+    /// Create a page HTML from a set of boxes
+    private func createHTML(_ boxes: [Box]) -> [String] {
         boxes
             .chunked(into: 12)
-            .map { box in
-                Self.HTML_BEGIN + #"<div class="page">"# + box.map { boxToDiv($0) }.joined() + "</div>" + Self.HTML_END
+            .map { page in
+                Self.HTML_BEGIN + page.map { boxToDiv($0) }.joined() + Self.HTML_END
             }
     }
 
-    private func toPDF2(_ pages: [String]) {
+    /// Creata a PDF file from the given HTML pages, one HTML string per page
+    private func createFile(_ pages: [String], filename: String = "codes.pdf") -> URL {
 
         // Setup renderer
         let renderer = UIPrintPageRenderer()
@@ -150,8 +99,6 @@ class QRGenerator {
         }
 
 
-
-
         let pdfData = NSMutableData()
 
         UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
@@ -165,46 +112,36 @@ class QRGenerator {
         UIGraphicsEndPDFContext()
 
         let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            .appendingPathComponent("printable.pdf")
+            .appendingPathComponent(filename)
         try? pdfData.write(to: url, options: [])
 
-        print("URL: ", url)
+        return url
 
     }
 
-    init() {
+    /// Generate a PDF with box QR codes
+    func generate(_ boxes: [Box]) {
+        isGenerating = true
+        url = nil
+        queue.async {
+            let pages = self.createHTML(boxes)
+            DispatchQueue.main.async {
+                let url = self.createFile(pages)
+                self.isGenerating = false
+                self.url = url
+            }
+        }
+    }
 
-        let example: [Model] = [
-            .init(code: "S-0000001", box: "One", location: "Loc1"),
-            .init(code: "S-0000002", box: "On2", location: "Loc2"),
-            .init(code: "S-0000003", box: "On3", location: "Loc3"),
-            .init(code: "S-0000004", box: "On4", location: "Loc4"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: nil, location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: nil),
-            .init(code: "S-0000005", box: nil, location: nil),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-000PAG2", box: "Strona druga", location: "Loc1"),
-            .init(code: "S-0000002", box: "On2", location: "Loc2"),
-            .init(code: "S-0000003", box: "On3", location: "Loc3"),
-            .init(code: "S-0000004", box: "On4", location: "Loc4"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: nil, location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: nil),
-            .init(code: "S-0000005", box: nil, location: nil),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-            .init(code: "S-STR3", box: "Strona trzecia", location: "Loc5"),
-            .init(code: "S-0000005", box: "On5", location: "Loc5"),
-        ]
-
-        let html = createHTML2(example)
-        toPDF2(html)
+    /// Delete the PDF file from the disk
+    func delete() {
+        if let url = url {
+            do {
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                logger.warning("Cannot delete file at url \(url): \(error.localizedDescription)")
+            }
+        }
     }
     
 }

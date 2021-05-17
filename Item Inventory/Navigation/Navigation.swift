@@ -28,7 +28,6 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         tabBar.delegate = self
 
         setupViews()
-        QRGenerator()
 
     }
 
