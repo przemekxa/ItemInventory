@@ -8,18 +8,34 @@
 import UIKit
 import CoreData
 import SwiftUI
+import OSLog
 
 class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchResultsUpdating, UICollectionViewDelegate {
     
     private var collectionView: UICollectionView!
     
     unowned private var storage: Storage!
+    private let logger = Logger.searchVC
     
     private var resultsController: NSFetchedResultsController<Item>!
 
     private var searchController: UISearchController!
     
     private var dataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
+
+    // State
+
+    private var sortAscending = (UserDefaults.standard.value(forKey: "SearchVC.sortAscending") as? Bool) ?? true {
+        didSet {
+            UserDefaults.standard.set(sortAscending, forKey: "SearchVC.sortAscending")
+        }
+    }
+
+    private var searchByKeywords: Bool = (UserDefaults.standard.value(forKey: "SearchVC.searchByKeywords") as? Bool) ?? false {
+        didSet {
+            UserDefaults.standard.set(sortAscending, forKey: "SearchVC.searchByKeywords")
+        }
+    }
     
     init(_ storage: Storage) {
         self.storage = storage
@@ -48,6 +64,7 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         makeSearchController()
 
         navigationController?.navigationBar.sizeToFit()
+        makeMenu()
 
     }
 
@@ -125,12 +142,46 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         }
     }
 
+    /// Update the fetch request and perform the fetch
+    private func updateFetch(forceFetch: Bool) {
+        resultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.name, ascending: sortAscending)]
+
+        if var searchText = searchController.searchBar.text, !searchText.isEmpty {
+
+            // Drop last letter if there are at least 3 characters typed
+            if searchText.count >= 3 {
+                searchText = String(searchText.dropLast())
+            }
+            let newPredicate: NSPredicate
+            if searchByKeywords {
+                newPredicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (keywords CONTAINS[cd] %@)", searchText, searchText)
+            } else {
+                newPredicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText)
+            }
+            if resultsController.fetchRequest.predicate != newPredicate {
+                resultsController.fetchRequest.predicate = newPredicate
+                try? resultsController.performFetch()
+                return
+            }
+        } else {
+            if resultsController.fetchRequest.predicate != nil {
+                resultsController.fetchRequest.predicate = nil
+                try? resultsController.performFetch()
+                return
+            }
+        }
+
+        if forceFetch {
+            try? resultsController.performFetch()
+        }
+    }
+
     // MARK: - Fetching results
     
     private func makeFetchResultsController() {
         // Create fetch request
         let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.name, ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.name, ascending: sortAscending)]
         resultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                               managedObjectContext: storage.context,
                                                               sectionNameKeyPath: nil,
@@ -179,26 +230,43 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
 
     // Handle search results
     func updateSearchResults(for searchController: UISearchController) {
-
-        // TODO: Make search smarter
-
-        if let searchText = searchController.searchBar.text, !searchText.isEmpty {
-            let newPredicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText)
-            if resultsController.fetchRequest.predicate != newPredicate {
-                resultsController.fetchRequest.predicate = newPredicate
-                try? resultsController.performFetch()
-            }
-        } else {
-            if resultsController.fetchRequest.predicate != nil {
-                resultsController.fetchRequest.predicate = nil
-                try? resultsController.performFetch()
-            }
-        }
-
-
-        print("Searched term:", searchController.searchBar.text as Any)
+        updateFetch(forceFetch: false)
+        logger.debug("Searched term: \(searchController.searchBar.text ?? "EMPTY")")
     }
 
+    // MARK: - Menu
 
+    /// Make the right button menu
+    private func makeMenu() {
+        let sortAscendingAction = UIAction(title: "Ascending",
+                                           image: UIImage(systemName: "arrow.up"),
+                                           state: sortAscending ? .on : .off) { [weak self] action in
+            self?.sortAscending = true
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+        let sortDescendingAction = UIAction(title: "Descending",
+                                            image: UIImage(systemName: "arrow.down"),
+                                            state: sortAscending ? .off : .on) { [weak self] action in
+            self?.sortAscending = false
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+        let sortMenu = UIMenu(title: "", options: .displayInline, children: [sortAscendingAction, sortDescendingAction])
+
+        let searchByKeywordsAction = UIAction(title: "Search in keywords",
+                                              state: searchByKeywords ? .on : .off) { [weak self] action in
+            self?.searchByKeywords.toggle()
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+
+        let menu = UIMenu(title: "Sort by name", children: [sortMenu, searchByKeywordsAction])
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options",
+                                                            image: UIImage(systemName: "ellipsis.circle"),
+                                                            primaryAction: nil,
+                                                            menu: menu)
+    }
 
 }

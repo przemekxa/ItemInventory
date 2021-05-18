@@ -112,6 +112,7 @@ struct LocationsView: View {
                 }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .sheet(isPresented: $addLocationSheet) {
             EditLocationView()
         }

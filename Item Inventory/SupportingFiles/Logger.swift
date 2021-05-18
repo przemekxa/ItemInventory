@@ -17,4 +17,6 @@ extension Logger {
     static let importExport = Logger(subsystem: subsystem, category: "importExport")
     static let qrGenerator = Logger(subsystem: subsystem, category: "qrGenerator")
 
+    static let searchVC = Logger(subsystem: subsystem, category: "searchVC")
+
 }

@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import OSLog
+import func AVFoundation.AVMakeRect
 
 class ImageStore {
 
@@ -30,9 +31,11 @@ class ImageStore {
         // Create images directory (if necessary)
         assureImagesDirectory()
 
+        #if DEBUG
         if let contents = try? fileManager.contentsOfDirectory(atPath: url.path) {
             print("Contents: ", contents)
         }
+        #endif
     }
 
 
@@ -111,13 +114,30 @@ class ImageStore {
         return Set()
     }
 
+    /// Resize the image to the desired size, keeping the aspect ratio
+    private func resize(image: UIImage, maxSize: CGSize = .init(width: 2048, height: 2048)) -> UIImage {
+        // Calculate the size
+        let size = AVMakeRect(aspectRatio: image.size, insideRect: CGRect(origin: .zero, size: maxSize)).size
+
+        // Set scale to 1x
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1.0
+
+        // Render new image
+        let renderer = UIGraphicsImageRenderer(size: size, format: format)
+        return renderer.image { context in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+
     /// Save an image
     func save(_ image: UIImage) -> Future<Identifier, Never> {
         Future { promise in
             self.queue.async {
                 let identifier = self.uniqueIdentifier()
                 let filepath = self.imageURL(for: identifier)
-                if let data = image.jpegData(compressionQuality: 0.7) {
+                let resized = self.resize(image: image)
+                if let data = resized.jpegData(compressionQuality: 0.7) {
                     do {
                         try data.write(to: filepath, options: .atomic)
                     } catch {

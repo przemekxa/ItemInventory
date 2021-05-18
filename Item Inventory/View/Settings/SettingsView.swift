@@ -102,16 +102,35 @@ struct SettingsView: View {
                         Label("Generate QR codes", systemImage: "doc")
                     }
                 }
+                Section(header: Text("About"), footer: Text("Copyright © \(year) Przemysław Ambroży")) {
+                    HStack(spacing: 16.0) {
+                        Image("AppIconSVG")
+                            .resizable()
+                            .frame(width: 64, height: 64)
+                            .clipShape(RoundedRectangle(cornerRadius: 0.2237 * 64, style: .continuous))
+                        VStack(alignment: .leading, spacing: 4.0) {
+                            Text("Item Finder")
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            Text("version \(version) (\(build))")
+                                .font(.footnote)
+                                .opacity(0.7)
+                        }
+
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 4.0)
+                }
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .alert(isPresented: $isShowingDeleteAlert) {
             Alert(title: Text("Are you sure?"),
                   message: Text("Do you want to delete all the data? This process cannot be undone"),
                   primaryButton: .cancel(),
                   secondaryButton: .destructive(Text("Delete"), action: {
-                    print("DELETING DATA")
                     storage.deleteAllData()
                   }))
         }
@@ -127,6 +146,18 @@ struct SettingsView: View {
             // Clean up
             try? manager.prepareExport()
         }
+    }
+
+    private var year: String {
+        String(max(Calendar.current.component(.year, from: Date()), 2021))
+    }
+
+    private var version: String {
+        (Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String) ?? "???"
+    }
+
+    private var build: String {
+        "build " + ((Bundle.main.infoDictionary?["CFBundleVersion"] as? String) ?? "???")
     }
 }
 
