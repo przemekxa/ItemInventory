@@ -143,8 +143,8 @@ struct BoxEditView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isScanning) {
-                QRBarcodeView(objectTypes: [.qr], handler: handleScan(result:))
+            .fullScreenCover(isPresented: $isScanning) {
+                QRBarcodeClosableView(objectTypes: [.qr], handler: handleScan(result:))
             }
             .fullScreenCover(isPresented: $isTakingPicture) {
                 ImagePicker(image: $image, sourceType: .camera)

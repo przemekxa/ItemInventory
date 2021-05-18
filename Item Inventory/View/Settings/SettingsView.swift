@@ -109,12 +109,12 @@ struct SettingsView: View {
                             .frame(width: 64, height: 64)
                             .clipShape(RoundedRectangle(cornerRadius: 0.2237 * 64, style: .continuous))
                         VStack(alignment: .leading, spacing: 4.0) {
-                            Text("Item Finder")
+                            Text(appName)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                             Text("version \(version) (\(build))")
                                 .font(.footnote)
-                                .opacity(0.7)
+                                .opacity(0.5)
                         }
 
                     }
@@ -146,6 +146,10 @@ struct SettingsView: View {
             // Clean up
             try? manager.prepareExport()
         }
+    }
+
+    private var appName: String {
+        (Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "???"
     }
 
     private var year: String {

@@ -22,7 +22,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     /// Whether the capture session showld be running
     var isActive: Bool = true {
         didSet {
-            if let session = session, !session.isRunning, isActive {
+            if finishedSetup, let session = session, !session.isRunning, isActive {
                 session.startRunning()
             } else if let session = session, session.isRunning, !isActive {
                 session.stopRunning()
@@ -32,7 +32,8 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     var objectTypes: [AVMetadataObject.ObjectType] = [.qr]
     weak var delegate: QRViewControllerDelegate?
 
-    private var didSetup = false
+    private var startedSetup = false
+    private var finishedSetup = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,7 +50,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if let session = session, !session.isRunning, isActive {
+        if finishedSetup, let session = session, !session.isRunning, isActive {
             session.startRunning()
         }
     }
@@ -103,10 +104,10 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 
     private func setup() {
 
-        if didSetup { return }
-        didSetup = true
+        if startedSetup { return }
+        startedSetup = true
 
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInteractive).async {
 
             let session = AVCaptureSession()
             self.session = session
@@ -151,6 +152,8 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                 self.preview?.frame = self.view.layer.bounds
                 self.preview?.videoGravity = .resizeAspectFill
                 self.view.layer.addSublayer(self.preview!)
+
+                self.finishedSetup = true
             }
 
 
@@ -267,4 +270,48 @@ struct QRBarcodeView: UIViewControllerRepresentable {
         Coordinator(handler: handler)
     }
 
+}
+
+struct QRBarcodeClosableView: View {
+
+    @Environment(\.presentationMode)
+    private var presentationMode
+
+    let objectTypes: [QRBarcodeView.ObjectType]
+    let handler: QRBarcodeView.Handler
+
+    @State private var result: QRBarcodeView.Result?
+
+    var body: some View {
+        ZStack {
+            QRBarcodeView(objectTypes: objectTypes, handler: handle(_:))
+                .edgesIgnoringSafeArea(.all)
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Text("Close")
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(16.0)
+                    .background(
+                        RoundedRectangle(cornerRadius: 32.0, style: .continuous)
+                            .fill(Color.blue)
+                            .shadow(color: .black.opacity(0.1), radius: 16, x: 0, y: 0)
+                    )
+                    .padding([.horizontal, .bottom], 16.0)
+                    .shadow(color: .black.opacity(0.1), radius: 16, x: 0, y: 0)
+            }
+            .frame(maxHeight: .infinity, alignment: .bottom)
+        }
+        .onDisappear {
+            if let result = result {
+                handler(result)
+            }
+        }
+    }
+
+    private func handle(_ result: QRBarcodeView.Result) {
+        self.result = result
+        presentationMode.wrappedValue.dismiss()
+    }
 }

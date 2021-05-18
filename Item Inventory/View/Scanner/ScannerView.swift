@@ -48,6 +48,10 @@ struct ScannerView: View {
             }
 
         }
+        .onAppear {
+            isActive = true
+            result = nil
+        }
         .navigationTitle("Scanner")
     }
 
