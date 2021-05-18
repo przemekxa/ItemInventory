@@ -13,7 +13,6 @@ class ImageCache: ObservableObject {
 
     typealias Identifier = ImageStore.Identifier
 
-    
     /// Used image store
     private let store: ImageStore
 
@@ -73,7 +72,7 @@ class ImageCache: ObservableObject {
 
         // Remove the old image
         delete(oldIdentifier)
-        
+
     }
 
     /// Move the images

@@ -1,0 +1,14 @@
+identifier_name:
+  excluded:
+    - qr
+    - id
+
+function_parameter_count:
+  warning: 7
+
+file_length:
+  warning: 450
+
+type_body_length:
+  warning: 250
+

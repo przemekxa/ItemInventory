@@ -12,7 +12,6 @@ protocol ImageUUIDsAsIdentifiers {
     var imageIdentifiers: [String] { get set }
 }
 
-
 extension ImageUUIDsAsIdentifiers {
 
     // Default implementation
@@ -33,7 +32,6 @@ extension ImageUUIDsAsIdentifiers {
     }
 
 }
-
 
 struct CodableItem: Codable, ImageUUIDsAsIdentifiers {
     var name: String
@@ -95,6 +93,3 @@ struct CodableLocation: Codable {
         }
     }
 }
-
-
-

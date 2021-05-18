@@ -13,7 +13,7 @@ import OSLog
 class Storage {
 
     private var container: NSPersistentContainer
-    
+
     private(set) var context: NSManagedObjectContext
 
     private var backgroundContext: NSManagedObjectContext
@@ -29,7 +29,7 @@ class Storage {
 
         // Init the persistent container
         container = NSPersistentContainer(name: "Item_Inventory")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+        container.loadPersistentStores(completionHandler: { (_, error) in
             if let error = error as NSError? {
                 Logger.storage.error("Error loading persistent store: \(error.localizedDescription)")
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -84,7 +84,6 @@ class Storage {
         }
     }
 
-
     /// Delete an object
     /// - Parameter id: ID of the object
     private func delete(_ id: NSManagedObjectID, save: Bool = true) {
@@ -128,7 +127,6 @@ class Storage {
         imageStore.deleteAllData()
     }
 
-
     /// Create a new background object context
     func newBackgroundContext() -> NSManagedObjectContext {
         container.newBackgroundContext()
@@ -164,7 +162,7 @@ class Storage {
 
     // MARK: - Box
 
-    private let LAST_BOX_ID_KEY = "lastBoxId"
+    private let lastBoxIDKey = "lastBoxId"
 
     /// Get all boxes
 //    var boxes: [Box] {
@@ -172,11 +170,10 @@ class Storage {
 //        return (try? context.fetch(fetchRequest)) ?? []
 //    }
 
-
     /// ID of the last saved box
     var lastBoxID: Int {
-        get { UserDefaults.standard.integer(forKey: LAST_BOX_ID_KEY) }
-        set { UserDefaults.standard.set(newValue, forKey: LAST_BOX_ID_KEY)}
+        get { UserDefaults.standard.integer(forKey: lastBoxIDKey) }
+        set { UserDefaults.standard.set(newValue, forKey: lastBoxIDKey)}
     }
 
     /// Check if a box with given id exists
@@ -209,33 +206,6 @@ class Storage {
         save()
 
         lastBoxID = code
-    }
-
-    func editBoxBG(box: Box,
-                 name: String,
-                 location: Location,
-                 comment: String,
-                 code: Int,
-                 imageUUID: String,
-                 callback: @escaping () -> ()) {
-
-        if
-            let box = try? backgroundContext.existingObject(with: box.objectID) as? Box,
-            let location = try? backgroundContext.existingObject(with: location.objectID) as? Location {
-
-            backgroundContext.perform { [weak self] in
-                box.name = name
-                box.location = location
-                box.comment = comment
-                box.code = Int64(code)
-                box.imageUUID = imageUUID
-                try? self?.backgroundContext.save()
-                DispatchQueue.main.async {
-                    callback()
-                }
-            }
-        }
-
     }
 
     /// Edit an existing box
@@ -276,7 +246,6 @@ class Storage {
         }
         delete(box.objectID)
     }
-
 
     // MARK: - Item
 
@@ -327,7 +296,6 @@ class Storage {
         save()
     }
 
-
     /// Delete an item
     func delete(_ item: Item, save: Bool = true) {
         let imageIdentifiers = item.imageIdentifiers
@@ -338,7 +306,6 @@ class Storage {
         }
         delete(item.objectID, save: save)
     }
-
 
     // MARK: - Images
 

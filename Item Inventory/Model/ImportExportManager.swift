@@ -13,15 +13,6 @@ import Combine
 
 class ImportExportManager: ObservableObject {
 
-    enum ExportError: Error {
-        case fetchLocations
-    }
-
-    enum ImportError: Error {
-        case generalLocation
-        case location
-    }
-
     static private let generalLocationFilename = "general_location"
     static private let locationFilenamePrefix = "location_"
 
@@ -29,7 +20,8 @@ class ImportExportManager: ObservableObject {
     private let storage: Storage
     private let imageStore: ImageStore
     private let fileManager: FileManager
-    private let queue = DispatchQueue(label: "com.przambrozy.iteminventory.importExportManager.queue", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "com.przambrozy.iteminventory.importExportManager.queue",
+                                      qos: .userInitiated)
 
     // URLs
 
@@ -63,8 +55,7 @@ class ImportExportManager: ObservableObject {
         self.fileManager = FileManager.default
         self.imagesURL = storage.imageStore.url
 
-        self.documentsURL = fileManager
-            .urls(for: .documentDirectory, in: .userDomainMask).first!
+        self.documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
 
         self.exportURL = documentsURL.appendingPathComponent("export", isDirectory: true)
         self.importURL = documentsURL.appendingPathComponent("import", isDirectory: true)
@@ -104,7 +95,7 @@ class ImportExportManager: ObservableObject {
 
     /// Export the database
     private func exportDatabase() throws {
-        
+
         let backgroundContext = storage.newBackgroundContext()
         let encoder = JSONEncoder()
 
@@ -138,9 +129,9 @@ class ImportExportManager: ObservableObject {
     }
 
     private func exportZip() throws -> URL {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd_HH-mm-ss"
-        let filename = "export_" + df.string(from: Date()) + ".zip"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let filename = "export_" + dateFormatter.string(from: Date()) + ".zip"
         let fileURL = documentsURL.appendingPathComponent(filename)
 
         do {
@@ -215,7 +206,6 @@ class ImportExportManager: ObservableObject {
         }
     }
 
-
     /// Cancel the export process
     func cancelExport() {
         exportWork?.cancel()
@@ -227,7 +217,7 @@ class ImportExportManager: ObservableObject {
 
     // MARK: - Import
 
-    private func updateImageIdentifiers(_ items: inout [CodableItem], in dictionary: inout [String:String]) {
+    private func updateImageIdentifiers(_ items: inout [CodableItem], in dictionary: inout [String: String]) {
 
         // Get old identifiers
         let oldIdentifiers = items.flatMap { $0.imageIdentifiers }
@@ -244,7 +234,7 @@ class ImportExportManager: ObservableObject {
         }
     }
 
-    private func updateImageIdentifiers(_ boxes: inout [CodableBox], in dictionary: inout [String:String]) {
+    private func updateImageIdentifiers(_ boxes: inout [CodableBox], in dictionary: inout [String: String]) {
 
         // Get old identifiers
         let oldIdentifiers = boxes.compactMap { $0.imageUUID }
@@ -266,7 +256,7 @@ class ImportExportManager: ObservableObject {
     /// Import General Location items
     private func importGeneralLocation(decoder: JSONDecoder,
                                        context: NSManagedObjectContext,
-                                       imageIdentifiers: inout [String:String]) throws {
+                                       imageIdentifiers: inout [String: String]) throws {
 
         // Decode items
         let data = try Data(contentsOf: importURL.appendingPathComponent(Self.generalLocationFilename + ".json"))
@@ -282,7 +272,7 @@ class ImportExportManager: ObservableObject {
                 let item = Item(context: context)
                 codableItem.populate(item: item)
             }
-            
+
             try? context.save()
         }
     }
@@ -290,7 +280,7 @@ class ImportExportManager: ObservableObject {
     private func importLocation(url: URL,
                                 decoder: JSONDecoder,
                                 context: NSManagedObjectContext,
-                                imageIdentifiers: inout [String:String]) throws {
+                                imageIdentifiers: inout [String: String]) throws {
 
         // Decode location
         let data = try Data(contentsOf: url)
@@ -329,7 +319,7 @@ class ImportExportManager: ObservableObject {
     }
 
     /// Import the images
-    private func importImages(_ dictionary: [ImageStore.Identifier:ImageStore.Identifier]) throws {
+    private func importImages(_ dictionary: [ImageStore.Identifier: ImageStore.Identifier]) throws {
 
         for (source, destination) in dictionary {
             let sourceURL = importURL.appendingPathComponent(source + ".jpg")
@@ -348,23 +338,21 @@ class ImportExportManager: ObservableObject {
         queue.async {
             do {
 
-                //let url = self.documentsURL.appendingPathComponent("test.zip")
                 let decoder = JSONDecoder()
                 let backgroundContext = self.storage.newBackgroundContext()
 
                 // Unzip
                 try self.fileManager.unzipItem(at: url,
-                                               to: self.documentsURL.appendingPathComponent("import", isDirectory: true))
-
+                                               to: self.documentsURL.appendingPathComponent("import",
+                                                                                            isDirectory: true))
 
                 // Keep track of image identifiers
-                var imageIdentifiers = [ImageStore.Identifier:ImageStore.Identifier]()
+                var imageIdentifiers = [ImageStore.Identifier: ImageStore.Identifier]()
 
                 // Import General location
                 try self.importGeneralLocation(decoder: decoder,
                                           context: backgroundContext,
                                           imageIdentifiers: &imageIdentifiers)
-
 
                 // Import Locations
                 let locations = try self.fileManager.contentsOfDirectory(atPath: self.importURL.path)
@@ -405,6 +393,20 @@ class ImportExportManager: ObservableObject {
             }
         }
 
-
     }
+}
+
+// MARK: - Error
+
+extension ImportExportManager {
+
+    enum ExportError: Error {
+        case fetchLocations
+    }
+
+    enum ImportError: Error {
+        case generalLocation
+        case location
+    }
+
 }

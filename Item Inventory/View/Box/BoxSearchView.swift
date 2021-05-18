@@ -10,6 +10,12 @@ import AVFoundation
 
 struct BoxSearchView: View {
 
+    struct Result {
+        var mode: BoxSearchCapsuleView.Mode
+        var name: String?
+        var qrCode: String?
+    }
+
     @Environment(\.storage)
     private var storage
 
@@ -23,7 +29,7 @@ struct BoxSearchView: View {
 
     @State private var isActive = true
 
-    @State private var result: (BoxSearchCapsuleView.Mode, String?, String?)?
+    @State private var result: Result?
 
     var body: some View {
         ZStack {
@@ -34,10 +40,10 @@ struct BoxSearchView: View {
 
             VStack(spacing: 0) {
                 Spacer()
-                if let (mode, name, qrCode) = result {
-                    BoxSearchCapsuleView(mode: mode, name: name, qrCode: qrCode) {
+                if let result = result {
+                    BoxSearchCapsuleView(mode: result.mode, name: result.name, qrCode: result.qrCode) {
                         withAnimation {
-                            result = nil
+                            self.result = nil
                             isActive = true
                         }
                     }
@@ -74,22 +80,22 @@ struct BoxSearchView: View {
 
     private func handleResult(result: QRBarcodeView.Result) {
         isActive = false
-        // TODO: Play audio
+
         switch result {
         case .success(let code, _):
             if box.qrCode == code {
                 successPlayer?.play()
-                self.result = (.correctBox, box.name ?? "?", code)
+                self.result = Result(mode: .correctBox, name: box.name ?? "?", qrCode: code)
             } else if let identifier = Box.qrCodeToInt(code), let box = storage.box(with: identifier) {
                 errorPlayer?.play()
-                self.result = (.wrongBox, box.name ?? "?", code)
+                self.result = Result(mode: .wrongBox, name: box.name ?? "?", qrCode: code)
             } else {
                 errorPlayer?.play()
-                self.result = (.boxNotFound, nil, nil)
+                self.result = Result(mode: .boxNotFound, name: nil, qrCode: nil)
             }
         case .error:
             errorPlayer?.play()
-            self.result = (.error, nil, nil)
+            self.result = Result(mode: .error, name: nil, qrCode: nil)
         }
     }
 

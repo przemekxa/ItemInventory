@@ -8,37 +8,6 @@
 import SwiftUI
 import CoreData
 
-//struct LocationCellView: View {
-//
-//    @Environment(\.storage)
-//    private var storage
-//
-//    @ObservedObject
-//    var location: Location
-//
-//    @Binding
-//    var editLocationSheet: Location?
-//
-//    var body: some View {
-//        NavigationLink(location.name ?? "?",
-//                       destination: LocationView(location))
-//            .contextMenu {
-//                Button {
-//                    editLocationSheet = location
-//                } label: {
-//                    Label("Edit", systemImage: "pencil")
-//                }
-//                Button {
-//                    storage.delete(location)
-//                } label: {
-//                    Label("Delete", systemImage: "trash")
-//                }
-//                .disabled(location.hasBoxes)
-//
-//            }
-//    }
-//}
-
 struct LocationsView: View {
 
     @Environment(\.storage)

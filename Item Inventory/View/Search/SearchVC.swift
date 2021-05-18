@@ -10,17 +10,17 @@ import CoreData
 import SwiftUI
 import OSLog
 
-class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchResultsUpdating, UICollectionViewDelegate {
-    
+class SearchVC: UIViewController, UICollectionViewDelegate {
+
     private var collectionView: UICollectionView!
-    
+
     unowned private var storage: Storage!
     private let logger = Logger.searchVC
-    
+
     private var resultsController: NSFetchedResultsController<Item>!
 
     private var searchController: UISearchController!
-    
+
     private var dataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
 
     // State
@@ -31,21 +31,23 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         }
     }
 
-    private var searchByKeywords: Bool = (UserDefaults.standard.value(forKey: "SearchVC.searchByKeywords") as? Bool) ?? false {
+    private var searchByKeywords: Bool = {
+        (UserDefaults.standard.value(forKey: "SearchVC.searchByKeywords") as? Bool) ?? false
+    }() {
         didSet {
             UserDefaults.standard.set(sortAscending, forKey: "SearchVC.searchByKeywords")
         }
     }
-    
+
     init(_ storage: Storage) {
         self.storage = storage
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -53,10 +55,10 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
 
         // Configure the layout
         configureLayout()
-        
+
         // Make the data source
         dataSource = makeDataSource()
-        
+
         // Make the fetch results controller
         makeFetchResultsController()
 
@@ -101,10 +103,10 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
             navigationController?.pushViewController(itemHostingController, animated: true)
         }
     }
-    
+
     /// Create a cell registration
     private func cellRegistration() -> UICollectionView.CellRegistration<UICollectionViewListCell, Item> {
-        .init { [weak storage] cell, indexPath, item in
+        .init { [weak storage] cell, _, item in
 
             var configuration = ItemContentConfiguration()
 
@@ -119,7 +121,9 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
             }
 
             // First image of the item
-            if let imageIdentifier = item.imageIdentifiers.first, let imageURL = storage?.imageStore.imageURL(for: imageIdentifier) {
+            if
+                let imageIdentifier = item.imageIdentifiers.first,
+                let imageURL = storage?.imageStore.imageURL(for: imageIdentifier) {
                 configuration.imageURL = imageURL
             }
 
@@ -144,7 +148,9 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
 
     /// Update the fetch request and perform the fetch
     private func updateFetch(forceFetch: Bool) {
-        resultsController.fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Item.name, ascending: sortAscending)]
+        resultsController.fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Item.name, ascending: sortAscending)
+        ]
 
         if var searchText = searchController.searchBar.text, !searchText.isEmpty {
 
@@ -154,7 +160,8 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
             }
             let newPredicate: NSPredicate
             if searchByKeywords {
-                newPredicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (keywords CONTAINS[cd] %@)", searchText, searchText)
+                newPredicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (keywords CONTAINS[cd] %@)",
+                                           searchText, searchText)
             } else {
                 newPredicate = NSPredicate(format: "name CONTAINS[cd] %@", searchText)
             }
@@ -176,8 +183,47 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         }
     }
 
-    // MARK: - Fetching results
-    
+    // MARK: - Menu
+
+    /// Make the right button menu
+    private func makeMenu() {
+        let sortAscendingAction = UIAction(title: "Ascending",
+                                           image: UIImage(systemName: "arrow.up"),
+                                           state: sortAscending ? .on : .off) { [weak self] _ in
+            self?.sortAscending = true
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+        let sortDescendingAction = UIAction(title: "Descending",
+                                            image: UIImage(systemName: "arrow.down"),
+                                            state: sortAscending ? .off : .on) { [weak self] _ in
+            self?.sortAscending = false
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+        let sortMenu = UIMenu(title: "", options: .displayInline, children: [sortAscendingAction, sortDescendingAction])
+
+        let searchByKeywordsAction = UIAction(title: "Search in keywords",
+                                              state: searchByKeywords ? .on : .off) { [weak self] _ in
+            self?.searchByKeywords.toggle()
+            self?.updateFetch(forceFetch: true)
+            self?.makeMenu()
+        }
+
+        let menu = UIMenu(title: "Sort by name", children: [sortMenu, searchByKeywordsAction])
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options",
+                                                            image: UIImage(systemName: "ellipsis.circle"),
+                                                            primaryAction: nil,
+                                                            menu: menu)
+    }
+
+}
+
+// MARK: - Fetching results
+
+extension SearchVC: NSFetchedResultsControllerDelegate {
+
     private func makeFetchResultsController() {
         // Create fetch request
         let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
@@ -186,9 +232,9 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
                                                               managedObjectContext: storage.context,
                                                               sectionNameKeyPath: nil,
                                                               cacheName: nil)
-        
+
         resultsController.delegate = self
-        
+
         try? resultsController.performFetch()
     }
 
@@ -215,7 +261,11 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
         dataSource.apply(snapshot, animatingDifferences: true)
     }
 
-    // MARK: - Search
+}
+
+// MARK: - Search
+
+extension SearchVC: UISearchResultsUpdating {
 
     /// Make the search controller
     private func makeSearchController() {
@@ -232,41 +282,6 @@ class SearchVC: UIViewController, NSFetchedResultsControllerDelegate, UISearchRe
     func updateSearchResults(for searchController: UISearchController) {
         updateFetch(forceFetch: false)
         logger.debug("Searched term: \(searchController.searchBar.text ?? "EMPTY")")
-    }
-
-    // MARK: - Menu
-
-    /// Make the right button menu
-    private func makeMenu() {
-        let sortAscendingAction = UIAction(title: "Ascending",
-                                           image: UIImage(systemName: "arrow.up"),
-                                           state: sortAscending ? .on : .off) { [weak self] action in
-            self?.sortAscending = true
-            self?.updateFetch(forceFetch: true)
-            self?.makeMenu()
-        }
-        let sortDescendingAction = UIAction(title: "Descending",
-                                            image: UIImage(systemName: "arrow.down"),
-                                            state: sortAscending ? .off : .on) { [weak self] action in
-            self?.sortAscending = false
-            self?.updateFetch(forceFetch: true)
-            self?.makeMenu()
-        }
-        let sortMenu = UIMenu(title: "", options: .displayInline, children: [sortAscendingAction, sortDescendingAction])
-
-        let searchByKeywordsAction = UIAction(title: "Search in keywords",
-                                              state: searchByKeywords ? .on : .off) { [weak self] action in
-            self?.searchByKeywords.toggle()
-            self?.updateFetch(forceFetch: true)
-            self?.makeMenu()
-        }
-
-        let menu = UIMenu(title: "Sort by name", children: [sortMenu, searchByKeywordsAction])
-
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options",
-                                                            image: UIImage(systemName: "ellipsis.circle"),
-                                                            primaryAction: nil,
-                                                            menu: menu)
     }
 
 }

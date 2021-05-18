@@ -67,7 +67,9 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         }
     }
 
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    func metadataOutput(_ output: AVCaptureMetadataOutput,
+                        didOutput metadataObjects: [AVMetadataObject],
+                        from connection: AVCaptureConnection) {
 
         if
             let object = metadataObjects.first,
@@ -156,7 +158,6 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                 self.finishedSetup = true
             }
 
-
         }
 
     }
@@ -182,7 +183,7 @@ class QRBarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsD
 
 struct QRBarcodeView: UIViewControllerRepresentable {
 
-    typealias Handler = (Result) -> ()
+    typealias Handler = (Result) -> Void
 
     @Binding var active: Bool
 
@@ -191,7 +192,7 @@ struct QRBarcodeView: UIViewControllerRepresentable {
         case error
     }
 
-    enum ObjectType  {
+    enum ObjectType {
         case qr
         case ean8
         case ean13

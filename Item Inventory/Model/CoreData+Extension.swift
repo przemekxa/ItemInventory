@@ -28,8 +28,8 @@ extension Box {
 
     /// Convert QR code to Int
     static func qrCodeToInt(_ code: String) -> Int? {
-        let regex = try! NSRegularExpression(pattern: #"^S-\d{8}$"#)
-        if regex.firstMatch(in: code,
+        if let regex = try? NSRegularExpression(pattern: #"^S-\d{8}$"#),
+           regex.firstMatch(in: code,
                             options: [],
                             range: NSRange(location: 0, length: code.utf16.count)) != nil {
             let startIndex = code.index(code.startIndex, offsetBy: 2)

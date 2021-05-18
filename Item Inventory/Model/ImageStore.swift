@@ -20,7 +20,6 @@ class ImageStore {
     private let fileManager = FileManager.default
     private let logger = Logger.imageStore
 
-
     init() {
 
         // Create images URL
@@ -38,7 +37,6 @@ class ImageStore {
         #endif
     }
 
-
     /// Create 'images' folder if necessary
     private func assureImagesDirectory() {
         if !fileManager.fileExists(atPath: url.path) {
@@ -49,7 +47,6 @@ class ImageStore {
             }
         }
     }
-
 
     /// Delete all the photos
     func deleteAllData() {
@@ -74,7 +71,6 @@ class ImageStore {
 
         return identifier
     }
-
 
     /// Generate multiple unique identifiers
     /// - Parameter count: Number of identifiers to generate
@@ -125,7 +121,7 @@ class ImageStore {
 
         // Render new image
         let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        return renderer.image { context in
+        return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: size))
         }
     }
@@ -190,5 +186,5 @@ class ImageStore {
             }
         }
     }
-    
+
 }

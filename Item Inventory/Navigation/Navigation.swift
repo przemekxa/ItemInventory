@@ -60,7 +60,6 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         let scannerViewEnvironment = scannerView
             .environment(\.managedObjectContext, storage.context)
             .environment(\.storage, storage)
-        
 
         let scannerViewHosting = UIHostingController(rootView: scannerViewEnvironment)
 
@@ -83,12 +82,13 @@ class Navigation: NSObject, UITabBarControllerDelegate {
                                                       image: UIImage(systemName: "gearshape"),
                                                       selectedImage: UIImage(systemName: "gearshape.fill"))
 
-
-        tabBar.setViewControllers([locationsViewHosting, searchNavigation, scannerNavigation, settingsViewHosting], animated: false)
+        tabBar.setViewControllers([locationsViewHosting, searchNavigation, scannerNavigation, settingsViewHosting],
+                                  animated: false)
         tabBar.selectedIndex = 0
     }
 
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+    func tabBarController(_ tabBarController: UITabBarController,
+                          shouldSelect viewController: UIViewController) -> Bool {
         // Focus on search bar if clicked on items again
         if
             viewController == tabBarController.selectedViewController,
@@ -127,6 +127,5 @@ extension Navigation: ScannerViewDelegate {
             scannerNavigation.pushViewController(itemViewHosting, animated: true)
         }
     }
-
 
 }

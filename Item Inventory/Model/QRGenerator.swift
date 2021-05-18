@@ -12,7 +12,7 @@ import UIKit
 
 class QRGenerator: ObservableObject {
 
-    private static let HTML_BEGIN = """
+    private static let htmlBegin = """
     <!doctype html><html><head><meta charset="utf-8" /><style>
     body,html,p,span{margin:0;font-family:-apple-system,sans-serif}
     .page{margin:0;box-sizing:border-box;padding:1cm;display:grid;
@@ -26,7 +26,7 @@ class QRGenerator: ObservableObject {
     </style></head><body><div class="page">
     """
 
-    private static let HTML_END = "</div></body></html>"
+    private static let htmlEnd = "</div></body></html>"
 
     struct Box {
         var code: String
@@ -77,7 +77,7 @@ class QRGenerator: ObservableObject {
         boxes
             .chunked(into: 12)
             .map { page in
-                Self.HTML_BEGIN + page.map { boxToDiv($0) }.joined() + Self.HTML_END
+                Self.htmlBegin + page.map { boxToDiv($0) }.joined() + Self.htmlEnd
             }
     }
 
@@ -98,15 +98,13 @@ class QRGenerator: ObservableObject {
             renderer.addPrintFormatter(formatter, startingAtPageAt: index)
         }
 
-
         let pdfData = NSMutableData()
 
         UIGraphicsBeginPDFContextToData(pdfData, .zero, nil)
 
-
-        for i in 0..<pages.count {
+        for index in 0..<pages.count {
             UIGraphicsBeginPDFPage()
-            renderer.drawPage(at: i, in: UIGraphicsGetPDFContextBounds())
+            renderer.drawPage(at: index, in: UIGraphicsGetPDFContextBounds())
         }
 
         UIGraphicsEndPDFContext()
@@ -143,9 +141,8 @@ class QRGenerator: ObservableObject {
             }
         }
     }
-    
-}
 
+}
 
 extension Array {
     func chunked(into size: Int) -> [[Element]] {

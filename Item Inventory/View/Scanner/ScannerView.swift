@@ -14,18 +14,24 @@ protocol ScannerViewDelegate: AnyObject {
 
 struct ScannerView: View {
 
+    struct Result {
+        var mode: BoxSearchCapsuleView.Mode
+        var name: String?
+        var code: String?
+        var codeName: String?
+    }
+
     @Environment(\.storage)
     private var storage
 
     @State private var isActive = true
 
-    @State private var result: (BoxSearchCapsuleView.Mode, String?, String?, String?)?
+    @State private var result: Result?
 
     @State private var box: Box?
 
     weak var delegate: ScannerViewDelegate?
 
-    
     var body: some View {
         ZStack {
             QRBarcodeView(objectTypes: [.qr, .ean8, .ean13, .upc],
@@ -35,10 +41,13 @@ struct ScannerView: View {
 
             VStack(spacing: 0) {
                 Spacer()
-                if let (mode, name, code, codeName) = result {
-                    BoxSearchCapsuleView(mode: mode, name: name, qrCode: code, codeName: codeName) {
+                if let result = result {
+                    BoxSearchCapsuleView(mode: result.mode,
+                                         name: result.name,
+                                         qrCode: result.code,
+                                         codeName: result.codeName) {
                         withAnimation {
-                            result = nil
+                            self.result = nil
                             isActive = true
                         }
                     }
@@ -66,24 +75,25 @@ struct ScannerView: View {
             } else if let item = storage.item(with: code) {
                 delegate?.showItem(item)
             } else {
-                self.result = (.notFound, nil, code, typeString)
+                self.result = Result(mode: .notFound, name: nil, code: code, codeName: typeString)
             }
         case .error:
-            self.result = (.error, nil, nil, nil)
+            self.result = Result(mode: .error, name: nil, code: nil, codeName: nil)
         }
     }
 
     private func findBox(_ code: String) -> Box? {
-        let regex = try! NSRegularExpression(pattern: #"S-\d{8}"#)
-        if regex.firstMatch(in: code,
+
+        if let regex = try? NSRegularExpression(pattern: #"S-\d{8}"#),
+           regex.firstMatch(in: code,
                             options: [],
                             range: NSRange(location: 0, length: code.utf16.count)) != nil {
 
             let startIndex = code.index(code.startIndex, offsetBy: 2)
             let endIndex = code.index(code.startIndex, offsetBy: 9)
-            let id = Int(code[startIndex...endIndex])!
+            let identifier = Int(code[startIndex...endIndex])!
 
-            return storage.box(with: id)
+            return storage.box(with: identifier)
         }
         return nil
     }

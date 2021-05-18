@@ -20,7 +20,6 @@ struct LocationView: View {
     @ObservedObject
     private var location: Location
 
-
     @State
     private var addBoxSheet = false
 

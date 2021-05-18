@@ -32,7 +32,6 @@ struct SettingsView: View {
                     .foregroundColor(.red)
                     .listRowInsets(EdgeInsets(top: 8.0, leading: 16.0, bottom: 8.0, trailing: 16.0))
 
-
                 }
                 Section(header: Text("Import / Export")) {
 

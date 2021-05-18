@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-fileprivate struct StorageKey: EnvironmentKey {
+private struct StorageKey: EnvironmentKey {
     static let defaultValue: Storage = .shared
 }
 

@@ -19,7 +19,6 @@ struct ItemView: View {
     @Environment(\.presentationMode)
     private var presentationMode
 
-
     @ObservedObject
     private var item: Item
 

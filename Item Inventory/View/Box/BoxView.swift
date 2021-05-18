@@ -211,7 +211,6 @@ struct BoxView: View {
                            buttons: buttons)
     }
 
-    
 }
 
 struct BoxView_Previews: PreviewProvider {

@@ -9,8 +9,6 @@ import SwiftUI
 
 struct ImagePicker: UIViewControllerRepresentable {
 
-
-
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         let parent: ImagePicker
 
@@ -18,7 +16,8 @@ struct ImagePicker: UIViewControllerRepresentable {
             self.parent = parent
         }
 
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController,
+                                   didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let uiImage = info[.originalImage] as? UIImage {
                 parent.image = uiImage
             }
@@ -38,7 +37,6 @@ struct ImagePicker: UIViewControllerRepresentable {
         self.sourceType = sourceType
     }
 
-
     func makeUIViewController(context: Context) -> some UIViewController {
         let picker = UIImagePickerController()
         picker.sourceType = sourceType
@@ -52,7 +50,6 @@ struct ImagePicker: UIViewControllerRepresentable {
         Coordinator(self)
     }
 }
-
 
 extension UIImagePickerController.SourceType: Identifiable {
     public var id: Int { hashValue }

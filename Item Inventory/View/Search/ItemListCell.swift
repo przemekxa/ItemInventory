@@ -69,8 +69,6 @@ class ItemContentView: UIView, UIContentView {
         labelsStack.addArrangedSubview(nameLabel)
         labelsStack.addArrangedSubview(locationLabel)
 
-
-
         nameLabel.font = .preferredFont(forTextStyle: .body)
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         locationLabel.font = .preferredFont(forTextStyle: .caption1)
@@ -84,7 +82,6 @@ class ItemContentView: UIView, UIContentView {
 
             imageView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: 10.0),
             imageView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            //imageView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
             imageBottom,
             imageView.heightAnchor.constraint(equalToConstant: 64.0),
             imageView.widthAnchor.constraint(equalToConstant: 64.0),
@@ -101,7 +98,9 @@ class ItemContentView: UIView, UIContentView {
         currentConfiguration = configuration
 
         // Set image
-        imageView.kf.setImage(with: configuration.imageURL, placeholder: UIImage(named: "slash"), options: [.processor(DownsamplingImageProcessor.scaled64)])
+        imageView.kf.setImage(with: configuration.imageURL,
+                              placeholder: UIImage(named: "slash"),
+                              options: [.processor(DownsamplingImageProcessor.scaled64)])
         // Set name
         nameLabel.text = configuration.name
         // Set location
@@ -112,9 +111,11 @@ class ItemContentView: UIView, UIContentView {
             locationText.append(NSAttributedString(string: " General space"))
             locationLabel.attributedText = locationText
         case .locationBox(let location, let box):
-            let locationText = NSMutableAttributedString(attachment: NSTextAttachment(image: UIImage(systemName: "map")!))
+            let locationText = NSMutableAttributedString(attachment:
+                                                            NSTextAttachment(image: UIImage(systemName: "map")!))
             locationText.append(NSAttributedString(string: " " + location + "\n"))
-            locationText.append(NSAttributedString(attachment: NSTextAttachment(image: UIImage(systemName: "archivebox")!)))
+            locationText.append(NSAttributedString(attachment:
+                                                    NSTextAttachment(image: UIImage(systemName: "archivebox")!)))
             locationText.append(NSAttributedString(string: " " + box))
             locationLabel.attributedText = locationText
         case .none:
@@ -122,6 +123,4 @@ class ItemContentView: UIView, UIContentView {
         }
     }
 
-
 }
-

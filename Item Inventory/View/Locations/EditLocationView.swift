@@ -20,7 +20,6 @@ struct EditLocationView: View {
 
     private var location: Location?
 
-
     /// Add new Location
     init() { }
 

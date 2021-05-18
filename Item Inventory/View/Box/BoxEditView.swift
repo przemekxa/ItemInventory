@@ -20,7 +20,6 @@ struct BoxEditView: View {
 
     private var box: Box?
 
-
     // Box properties
 
     @State private var name: String = ""
@@ -211,8 +210,8 @@ struct BoxEditView: View {
     private func handleScan(result: QRBarcodeView.Result) {
         isScanning = false
         if case .success(let code, _) = result {
-            let regex = try! NSRegularExpression(pattern: #"S-\d{8}"#)
-            if regex.firstMatch(in: code,
+            if let regex = try? NSRegularExpression(pattern: #"S-\d{8}"#),
+               regex.firstMatch(in: code,
                                 options: [],
                                 range: NSRange(location: 0, length: code.utf16.count)) != nil {
 
@@ -262,7 +261,6 @@ struct BoxEditView: View {
                         imageUUID: cache.images.first)
         presentationMode.wrappedValue.dismiss()
     }
-
 
 }
 
