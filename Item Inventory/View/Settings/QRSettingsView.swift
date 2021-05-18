@@ -44,7 +44,7 @@ struct QRSettingsView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color(UIColor.systemBackground))
+                    .background(Color(UIColor.secondarySystemGroupedBackground))
                     .onTapGesture {
                         if selectedBoxes.contains(box) {
                             selectedBoxes.remove(box)
