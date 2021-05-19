@@ -30,7 +30,7 @@ struct QRSettingsView: View {
                         value: $futureCount,
                         in: 0...120)
             }
-            Section(header: Text("Existing boxes")) {
+            Section(header: boxesHeader) {
                 ForEach(boxes) { box in
                     HStack(spacing: 12.0) {
                         Image(systemName: selectedBoxes.contains(box) ? "checkmark.circle.fill" : "circle")
@@ -76,12 +76,31 @@ struct QRSettingsView: View {
         }
     }
 
+    private var boxesHeader: some View {
+        HStack {
+            Text("Existing boxes")
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Menu("Select") {
+                Button("Select all") {
+                    selectedBoxes = Set(boxes)
+                }
+                .textCase(nil)
+                Button("Select none") {
+                    selectedBoxes.removeAll()
+                }
+                .textCase(nil)
+            }
+        }
+    }
+
     private func generate() {
         let lastID = max(storage.lastBoxID, Int(selectedBoxes.map { $0.code }.max() ?? 0))
 
-        var codes = selectedBoxes.map {
-            QRGenerator.Box(code: $0.qrCode, name: $0.name, location: $0.location?.name)
-        }
+        var codes = Array(selectedBoxes)
+            .sorted(by: { $0.code < $1.code })
+            .map {
+                QRGenerator.Box(code: $0.qrCode, name: $0.name, location: $0.location?.name)
+            }
 
         if futureCount > 0 {
             codes += Array((lastID + 1)...(lastID + futureCount)).map {
