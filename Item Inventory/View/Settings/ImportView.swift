@@ -28,7 +28,7 @@ struct ImportView: UIViewControllerRepresentable {
     let didPickHandler: (URL) -> Void
 
     func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.zip])
+        let controller = UIDocumentPickerViewController(forOpeningContentTypes: [.zip], asCopy: true)
         controller.delegate = context.coordinator
 
         return controller
