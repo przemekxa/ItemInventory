@@ -135,11 +135,13 @@ struct SettingsView: View {
         }
         .sheet(item: $manager.exportFileURL) { url in
             ExportView(fileURL: url, completion: manager.didExport)
+                .edgesIgnoringSafeArea(.all)
         }
         .sheet(isPresented: $isShowingImportView) {
             ImportView { url in
                 manager.importData(from: url)
             }
+            .edgesIgnoringSafeArea(.all)
         }
         .onDisappear {
             // Clean up

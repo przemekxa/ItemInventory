@@ -38,24 +38,15 @@ struct ItemView: View {
             Section(header: Text("Details")) {
                 HeaderCell(Text("Name")) { Text(item.name ?? "?") }
                 HeaderCell(Text("Location")) {
-//                    if allowsOpeningBoxAndLocation {
-//                        if let location = item.box?.location {
-//                            NavigationLink(location.name ?? "-", destination:
-//                                            LocationView(location)
-//                                                .environment(\.managedObjectContext, managedObjectContext)
-//                                                .environment(\.storage, storage)
-//                            )
-//                        } else {
-//                            NavigationLink("General space", destination:
-//                                            GeneralSpaceView()
-//                                                .environment(\.managedObjectContext, managedObjectContext)
-//                                                .environment(\.storage, storage)
-//                            )
-//                        }
-//                    } else {
-//                        Text(item.box?.location?.name ?? "General space")
-//                    }
-                    Text(item.box?.location?.name ?? "General space")
+                    if allowsOpeningBoxAndLocation && item.box == nil {
+                        NavigationLink("General space", destination:
+                                        GeneralSpaceView()
+                                            .environment(\.managedObjectContext, managedObjectContext)
+                                            .environment(\.storage, storage)
+                        )
+                    } else {
+                        Text(item.box?.location?.name ?? "General space")
+                    }
                 }
                 HeaderCell(Text("Box")) {
                     if allowsOpeningBoxAndLocation, let box = item.box {
