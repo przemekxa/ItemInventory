@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import Combine
 
 class Navigation: NSObject, UITabBarControllerDelegate {
 
@@ -18,6 +19,7 @@ class Navigation: NSObject, UITabBarControllerDelegate {
 
     private(set) var storage: Storage
     private var importExportManager: ImportExportManager
+    private var cancellables = Set<AnyCancellable>()
 
     override init() {
         tabBar = UITabBarController()
@@ -28,6 +30,13 @@ class Navigation: NSObject, UITabBarControllerDelegate {
         tabBar.delegate = self
 
         setupViews()
+
+        // SwiftUI tab bar title bug workaround
+        NotificationCenter.default.publisher(for: Self.updateTabBar)
+            .sink { [weak self] _ in
+                self?.tabBar.viewControllers?[2].tabBarItem.title = "Scanner"
+            }
+            .store(in: &cancellables)
 
     }
 
@@ -112,7 +121,7 @@ extension Navigation: ScannerViewDelegate {
                 .environment(\.managedObjectContext, storage.context)
                 .environment(\.storage, storage)
             let boxViewHosting = UIHostingController(rootView: boxView)
-            boxViewHosting.title = box.name
+            boxViewHosting.navigationItem.title = box.name
             scannerNavigation.pushViewController(boxViewHosting, animated: true)
         }
     }
@@ -123,9 +132,14 @@ extension Navigation: ScannerViewDelegate {
                 .environment(\.managedObjectContext, storage.context)
                 .environment(\.storage, storage)
             let itemViewHosting = UIHostingController(rootView: itemView)
-            itemViewHosting.title = item.name
+            itemViewHosting.navigationItem.title = item.name
             scannerNavigation.pushViewController(itemViewHosting, animated: true)
         }
     }
 
+}
+
+extension Navigation {
+
+    static let updateTabBar = NSNotification.Name("com.przambrozy.iteminventory.updateTabrBar")
 }

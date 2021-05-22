@@ -131,6 +131,10 @@ struct BoxView: View {
         .fullScreenCover(isPresented: $showFindBoxSheet) {
             BoxSearchView(box: box)
         }
+        .onAppear {
+            // SwiftUI tab bar title bug workaround
+            NotificationCenter.default.post(name: Navigation.updateTabBar, object: nil)
+        }
     }
 
     private func contextMenu(for item: Item) -> some View {

@@ -109,6 +109,10 @@ struct ItemView: View {
             )
         }
         .listStyle(InsetGroupedListStyle())
+        .onAppear {
+            // SwiftUI tab bar title bug workaround
+            NotificationCenter.default.post(name: Navigation.updateTabBar, object: nil)
+        }
     }
 }
 

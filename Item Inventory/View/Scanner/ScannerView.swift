@@ -60,6 +60,8 @@ struct ScannerView: View {
         .onAppear {
             isActive = true
             result = nil
+            // SwiftUI tab bar title bug workaround
+            NotificationCenter.default.post(name: Navigation.updateTabBar, object: nil)
         }
         .navigationTitle("Scanner")
     }

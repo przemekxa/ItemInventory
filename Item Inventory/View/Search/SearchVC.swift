@@ -99,7 +99,7 @@ class SearchVC: UIViewController, UICollectionViewDelegate {
                 .environment(\.managedObjectContext, storage.context)
                 .environment(\.storage, storage)
             let itemHostingController = UIHostingController(rootView: itemView)
-            itemHostingController.title = item.name
+            itemHostingController.navigationItem.title = item.name
             navigationController?.pushViewController(itemHostingController, animated: true)
         }
     }
