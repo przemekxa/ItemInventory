@@ -1,14 +1,4 @@
-<style>
-table {
-    text-align: center;
-}
-table img {
-    width: 300px;
-    display: block;
-    margin: 12px 0;
-}
-</style>
-<img style="width: 128px;" src="media/icon.png" />
+<img  width="128" src="media/icon.png" />
 
 # Item Inventory
 Item Inventory is an app that allows you to organize and manage items into boxes stored in different locations around the house.
@@ -19,71 +9,71 @@ Most of the app is written is SwiftUI, using UIKit elements when necessary.
 <table>
     <tr>
         <td>
-            <img src="media/screenshot1.png">
+            <img src="media/screenshot1.png" width="300">
             List of locations
         </td>
         <td>
-            <img src="media/screenshot2.png">
+            <img src="media/screenshot2.png" width="300">
             General space
         </td>
         <td>
-            <img src="media/screenshot3.png">
+            <img src="media/screenshot3.png" width="300">
             A location
         </td>
     </tr>
     <tr>
         <td>
-            <img src="media/screenshot4.png">
+            <img src="media/screenshot4.png" width="300">
             Editing a location
         </td>
         <td>
-            <img src="media/screenshot5.png">
+            <img src="media/screenshot5.png" width="300">
             A box
         </td>
         <td>
-            <img src="media/screenshot6.png">
+            <img src="media/screenshot6.png" width="300">
             Editing a box
         </td>
     </tr>
     <tr>
         <td>
-            <img src="media/screenshot7.png">
+            <img src="media/screenshot7.png" width="300">
             Box search
         </td>
         <td>
-            <img src="media/screenshot8.png">
+            <img src="media/screenshot8.png" width="300">
             An item
         </td>
         <td>
-            <img src="media/screenshot9.png">
+            <img src="media/screenshot9.png" width="300">
             Editing an item
         </td>
     </tr>
     <tr>
         <td>
-            <img src="media/screenshot10.png">
+            <img src="media/screenshot10.png" width="300">
             List of all items
         </td>
         <td>
-            <img src="media/screenshot11.png">
+            <img src="media/screenshot11.png" width="300">
             Item search
         </td>
         <td>
-            <img src="media/screenshot12.png">
+            <img src="media/screenshot12.png" width="300">
             A scanner
         </td>
     </tr>
     <tr>
         <td>
-            <img src="media/screenshot13.png">
+            <img src="media/screenshot13.png" width="300">
             App settings
         </td>
         <td>
-            <img src="media/screenshot14.png">
+            <img src="media/screenshot14.png" width="300">
             Generating QR codes
         </td>
         <td>
-            <img src="media/screenshot15.png">
+            <img src="media/screenshot15.png" width="300">
             Generated codes
         </td>
     </tr>
